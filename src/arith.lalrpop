@@ -3,6 +3,9 @@ use ast::{BinOp, Exp};
 
 grammar;
 
+// Top-level expression nonterminal
+//
+// Parses addition/subtraction expressions
 pub Exp: Box<Exp> = {
     Exp AddOp MulExp => Box::new(Exp::BinExp(<>)),
     MulExp,
@@ -13,6 +16,7 @@ AddOp: BinOp = {
     "-" => BinOp::Minus,
 };
 
+// Parses multiplication
 MulExp: Box<Exp> = {
     MulExp MulOp Term => Box::new(Exp::BinExp(<>)),
     Term,
@@ -22,6 +26,7 @@ MulOp: BinOp = {
     "*" => BinOp::Star,
 };
 
+// Parses numbers and parenthetical expressions
 Term: Box<Exp> = {
     Int => Box::new(Exp::Int(<>)),
     Float => Box::new(Exp::Float(<>)),
