@@ -1,0 +1,11 @@
+[package]
+name = "jsrs-parser"
+version = "0.1.0"
+authors = ["Saghm Rossi <saghmrossi@gmail.com>"]
+build = "build.rs"
+
+[build-dependencies]
+lalrpop = "0.6.1"
+
+[dependencies]
+lalrpop-util = "0.6.1"
