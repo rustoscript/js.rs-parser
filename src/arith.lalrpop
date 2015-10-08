@@ -29,9 +29,9 @@ Term: Box<Exp> = {
 };
 
 Int: i64 = {
-    r"[0-9]+" => i64::from_str(<>).unwrap()
+    r"-?[0-9]+" => i64::from_str(<>).unwrap()
 };
 
 Float: f64 = {
-    r"[0-9]+\.[0-9]+" => f64::from_str(<>).unwrap()
+    r"-?[0-9]+\.[0-9]+" => f64::from_str(<>).unwrap()
 };

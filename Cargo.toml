@@ -8,4 +8,5 @@ build = "build.rs"
 lalrpop = "0.6.1"
 
 [dependencies]
+nalgebra = "0.3.0"
 lalrpop-util = "0.6.1"

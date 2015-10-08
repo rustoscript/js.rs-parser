@@ -54,14 +54,14 @@ mod __parse__Exp {
     //   Exp = (*) MulExp [EOF]
     //   Exp = (*) MulExp ["+"]
     //   Exp = (*) MulExp ["-"]
-    //   Float = (*) r#"[0-9]+\\.[0-9]+"# [EOF]
-    //   Float = (*) r#"[0-9]+\\.[0-9]+"# ["*"]
-    //   Float = (*) r#"[0-9]+\\.[0-9]+"# ["+"]
-    //   Float = (*) r#"[0-9]+\\.[0-9]+"# ["-"]
-    //   Int = (*) r#"[0-9]+"# [EOF]
-    //   Int = (*) r#"[0-9]+"# ["*"]
-    //   Int = (*) r#"[0-9]+"# ["+"]
-    //   Int = (*) r#"[0-9]+"# ["-"]
+    //   Float = (*) r#"-?[0-9]+\\.[0-9]+"# [EOF]
+    //   Float = (*) r#"-?[0-9]+\\.[0-9]+"# ["*"]
+    //   Float = (*) r#"-?[0-9]+\\.[0-9]+"# ["+"]
+    //   Float = (*) r#"-?[0-9]+\\.[0-9]+"# ["-"]
+    //   Int = (*) r#"-?[0-9]+"# [EOF]
+    //   Int = (*) r#"-?[0-9]+"# ["*"]
+    //   Int = (*) r#"-?[0-9]+"# ["+"]
+    //   Int = (*) r#"-?[0-9]+"# ["-"]
     //   MulExp = (*) MulExp MulOp Term [EOF]
     //   MulExp = (*) MulExp MulOp Term ["*"]
     //   MulExp = (*) MulExp MulOp Term ["+"]
@@ -85,8 +85,8 @@ mod __parse__Exp {
     //   __Exp = (*) Exp [EOF]
     //
     //   "(" -> Shift(S6)
-    //   r#"[0-9]+"# -> Shift(S7)
-    //   r#"[0-9]+\\.[0-9]+"# -> Shift(S8)
+    //   r#"-?[0-9]+"# -> Shift(S7)
+    //   r#"-?[0-9]+\\.[0-9]+"# -> Shift(S8)
     //
     //   Exp -> S1
     //   Float -> S2
@@ -159,11 +159,11 @@ mod __parse__Exp {
 
     // State 1
     //   AddOp = (*) "+" ["("]
-    //   AddOp = (*) "+" [r#"[0-9]+"#]
-    //   AddOp = (*) "+" [r#"[0-9]+\\.[0-9]+"#]
+    //   AddOp = (*) "+" [r#"-?[0-9]+"#]
+    //   AddOp = (*) "+" [r#"-?[0-9]+\\.[0-9]+"#]
     //   AddOp = (*) "-" ["("]
-    //   AddOp = (*) "-" [r#"[0-9]+"#]
-    //   AddOp = (*) "-" [r#"[0-9]+\\.[0-9]+"#]
+    //   AddOp = (*) "-" [r#"-?[0-9]+"#]
+    //   AddOp = (*) "-" [r#"-?[0-9]+\\.[0-9]+"#]
     //   Exp = Exp (*) AddOp MulExp [EOF]
     //   Exp = Exp (*) AddOp MulExp ["+"]
     //   Exp = Exp (*) AddOp MulExp ["-"]
@@ -315,8 +315,8 @@ mod __parse__Exp {
     //   MulExp = MulExp (*) MulOp Term ["+"]
     //   MulExp = MulExp (*) MulOp Term ["-"]
     //   MulOp = (*) "*" ["("]
-    //   MulOp = (*) "*" [r#"[0-9]+"#]
-    //   MulOp = (*) "*" [r#"[0-9]+\\.[0-9]+"#]
+    //   MulOp = (*) "*" [r#"-?[0-9]+"#]
+    //   MulOp = (*) "*" [r#"-?[0-9]+\\.[0-9]+"#]
     //
     //   EOF -> Reduce(Exp = MulExp => Call(ActionFn(2));)
     //   "*" -> Shift(S13)
@@ -419,14 +419,14 @@ mod __parse__Exp {
     //   Exp = (*) MulExp [")"]
     //   Exp = (*) MulExp ["+"]
     //   Exp = (*) MulExp ["-"]
-    //   Float = (*) r#"[0-9]+\\.[0-9]+"# [")"]
-    //   Float = (*) r#"[0-9]+\\.[0-9]+"# ["*"]
-    //   Float = (*) r#"[0-9]+\\.[0-9]+"# ["+"]
-    //   Float = (*) r#"[0-9]+\\.[0-9]+"# ["-"]
-    //   Int = (*) r#"[0-9]+"# [")"]
-    //   Int = (*) r#"[0-9]+"# ["*"]
-    //   Int = (*) r#"[0-9]+"# ["+"]
-    //   Int = (*) r#"[0-9]+"# ["-"]
+    //   Float = (*) r#"-?[0-9]+\\.[0-9]+"# [")"]
+    //   Float = (*) r#"-?[0-9]+\\.[0-9]+"# ["*"]
+    //   Float = (*) r#"-?[0-9]+\\.[0-9]+"# ["+"]
+    //   Float = (*) r#"-?[0-9]+\\.[0-9]+"# ["-"]
+    //   Int = (*) r#"-?[0-9]+"# [")"]
+    //   Int = (*) r#"-?[0-9]+"# ["*"]
+    //   Int = (*) r#"-?[0-9]+"# ["+"]
+    //   Int = (*) r#"-?[0-9]+"# ["-"]
     //   MulExp = (*) MulExp MulOp Term [")"]
     //   MulExp = (*) MulExp MulOp Term ["*"]
     //   MulExp = (*) MulExp MulOp Term ["+"]
@@ -453,8 +453,8 @@ mod __parse__Exp {
     //   Term = "(" (*) Exp ")" ["-"]
     //
     //   "(" -> Shift(S19)
-    //   r#"[0-9]+"# -> Shift(S20)
-    //   r#"[0-9]+\\.[0-9]+"# -> Shift(S21)
+    //   r#"-?[0-9]+"# -> Shift(S20)
+    //   r#"-?[0-9]+\\.[0-9]+"# -> Shift(S21)
     //
     //   Exp -> S14
     //   Float -> S15
@@ -532,15 +532,15 @@ mod __parse__Exp {
     }
 
     // State 7
-    //   Int = r#"[0-9]+"# (*) [EOF]
-    //   Int = r#"[0-9]+"# (*) ["*"]
-    //   Int = r#"[0-9]+"# (*) ["+"]
-    //   Int = r#"[0-9]+"# (*) ["-"]
+    //   Int = r#"-?[0-9]+"# (*) [EOF]
+    //   Int = r#"-?[0-9]+"# (*) ["*"]
+    //   Int = r#"-?[0-9]+"# (*) ["+"]
+    //   Int = r#"-?[0-9]+"# (*) ["-"]
     //
-    //   EOF -> Reduce(Int = r#"[0-9]+"# => Call(ActionFn(11));)
-    //   "*" -> Reduce(Int = r#"[0-9]+"# => Call(ActionFn(11));)
-    //   "+" -> Reduce(Int = r#"[0-9]+"# => Call(ActionFn(11));)
-    //   "-" -> Reduce(Int = r#"[0-9]+"# => Call(ActionFn(11));)
+    //   EOF -> Reduce(Int = r#"-?[0-9]+"# => Call(ActionFn(11));)
+    //   "*" -> Reduce(Int = r#"-?[0-9]+"# => Call(ActionFn(11));)
+    //   "+" -> Reduce(Int = r#"-?[0-9]+"# => Call(ActionFn(11));)
+    //   "-" -> Reduce(Int = r#"-?[0-9]+"# => Call(ActionFn(11));)
     //
     pub fn __state7<
         'input,
@@ -577,15 +577,15 @@ mod __parse__Exp {
     }
 
     // State 8
-    //   Float = r#"[0-9]+\\.[0-9]+"# (*) [EOF]
-    //   Float = r#"[0-9]+\\.[0-9]+"# (*) ["*"]
-    //   Float = r#"[0-9]+\\.[0-9]+"# (*) ["+"]
-    //   Float = r#"[0-9]+\\.[0-9]+"# (*) ["-"]
+    //   Float = r#"-?[0-9]+\\.[0-9]+"# (*) [EOF]
+    //   Float = r#"-?[0-9]+\\.[0-9]+"# (*) ["*"]
+    //   Float = r#"-?[0-9]+\\.[0-9]+"# (*) ["+"]
+    //   Float = r#"-?[0-9]+\\.[0-9]+"# (*) ["-"]
     //
-    //   EOF -> Reduce(Float = r#"[0-9]+\\.[0-9]+"# => Call(ActionFn(12));)
-    //   "*" -> Reduce(Float = r#"[0-9]+\\.[0-9]+"# => Call(ActionFn(12));)
-    //   "+" -> Reduce(Float = r#"[0-9]+\\.[0-9]+"# => Call(ActionFn(12));)
-    //   "-" -> Reduce(Float = r#"[0-9]+\\.[0-9]+"# => Call(ActionFn(12));)
+    //   EOF -> Reduce(Float = r#"-?[0-9]+\\.[0-9]+"# => Call(ActionFn(12));)
+    //   "*" -> Reduce(Float = r#"-?[0-9]+\\.[0-9]+"# => Call(ActionFn(12));)
+    //   "+" -> Reduce(Float = r#"-?[0-9]+\\.[0-9]+"# => Call(ActionFn(12));)
+    //   "-" -> Reduce(Float = r#"-?[0-9]+\\.[0-9]+"# => Call(ActionFn(12));)
     //
     pub fn __state8<
         'input,
@@ -625,14 +625,14 @@ mod __parse__Exp {
     //   Exp = Exp AddOp (*) MulExp [EOF]
     //   Exp = Exp AddOp (*) MulExp ["+"]
     //   Exp = Exp AddOp (*) MulExp ["-"]
-    //   Float = (*) r#"[0-9]+\\.[0-9]+"# [EOF]
-    //   Float = (*) r#"[0-9]+\\.[0-9]+"# ["*"]
-    //   Float = (*) r#"[0-9]+\\.[0-9]+"# ["+"]
-    //   Float = (*) r#"[0-9]+\\.[0-9]+"# ["-"]
-    //   Int = (*) r#"[0-9]+"# [EOF]
-    //   Int = (*) r#"[0-9]+"# ["*"]
-    //   Int = (*) r#"[0-9]+"# ["+"]
-    //   Int = (*) r#"[0-9]+"# ["-"]
+    //   Float = (*) r#"-?[0-9]+\\.[0-9]+"# [EOF]
+    //   Float = (*) r#"-?[0-9]+\\.[0-9]+"# ["*"]
+    //   Float = (*) r#"-?[0-9]+\\.[0-9]+"# ["+"]
+    //   Float = (*) r#"-?[0-9]+\\.[0-9]+"# ["-"]
+    //   Int = (*) r#"-?[0-9]+"# [EOF]
+    //   Int = (*) r#"-?[0-9]+"# ["*"]
+    //   Int = (*) r#"-?[0-9]+"# ["+"]
+    //   Int = (*) r#"-?[0-9]+"# ["-"]
     //   MulExp = (*) MulExp MulOp Term [EOF]
     //   MulExp = (*) MulExp MulOp Term ["*"]
     //   MulExp = (*) MulExp MulOp Term ["+"]
@@ -655,8 +655,8 @@ mod __parse__Exp {
     //   Term = (*) "(" Exp ")" ["-"]
     //
     //   "(" -> Shift(S6)
-    //   r#"[0-9]+"# -> Shift(S7)
-    //   r#"[0-9]+\\.[0-9]+"# -> Shift(S8)
+    //   r#"-?[0-9]+"# -> Shift(S7)
+    //   r#"-?[0-9]+\\.[0-9]+"# -> Shift(S8)
     //
     //   Float -> S2
     //   Int -> S3
@@ -727,12 +727,12 @@ mod __parse__Exp {
 
     // State 10
     //   AddOp = "+" (*) ["("]
-    //   AddOp = "+" (*) [r#"[0-9]+"#]
-    //   AddOp = "+" (*) [r#"[0-9]+\\.[0-9]+"#]
+    //   AddOp = "+" (*) [r#"-?[0-9]+"#]
+    //   AddOp = "+" (*) [r#"-?[0-9]+\\.[0-9]+"#]
     //
     //   "(" -> Reduce(AddOp = "+" => Call(ActionFn(3));)
-    //   r#"[0-9]+"# -> Reduce(AddOp = "+" => Call(ActionFn(3));)
-    //   r#"[0-9]+\\.[0-9]+"# -> Reduce(AddOp = "+" => Call(ActionFn(3));)
+    //   r#"-?[0-9]+"# -> Reduce(AddOp = "+" => Call(ActionFn(3));)
+    //   r#"-?[0-9]+\\.[0-9]+"# -> Reduce(AddOp = "+" => Call(ActionFn(3));)
     //
     pub fn __state10<
         'input,
@@ -769,12 +769,12 @@ mod __parse__Exp {
 
     // State 11
     //   AddOp = "-" (*) ["("]
-    //   AddOp = "-" (*) [r#"[0-9]+"#]
-    //   AddOp = "-" (*) [r#"[0-9]+\\.[0-9]+"#]
+    //   AddOp = "-" (*) [r#"-?[0-9]+"#]
+    //   AddOp = "-" (*) [r#"-?[0-9]+\\.[0-9]+"#]
     //
     //   "(" -> Reduce(AddOp = "-" => Call(ActionFn(4));)
-    //   r#"[0-9]+"# -> Reduce(AddOp = "-" => Call(ActionFn(4));)
-    //   r#"[0-9]+\\.[0-9]+"# -> Reduce(AddOp = "-" => Call(ActionFn(4));)
+    //   r#"-?[0-9]+"# -> Reduce(AddOp = "-" => Call(ActionFn(4));)
+    //   r#"-?[0-9]+\\.[0-9]+"# -> Reduce(AddOp = "-" => Call(ActionFn(4));)
     //
     pub fn __state11<
         'input,
@@ -810,14 +810,14 @@ mod __parse__Exp {
     }
 
     // State 12
-    //   Float = (*) r#"[0-9]+\\.[0-9]+"# [EOF]
-    //   Float = (*) r#"[0-9]+\\.[0-9]+"# ["*"]
-    //   Float = (*) r#"[0-9]+\\.[0-9]+"# ["+"]
-    //   Float = (*) r#"[0-9]+\\.[0-9]+"# ["-"]
-    //   Int = (*) r#"[0-9]+"# [EOF]
-    //   Int = (*) r#"[0-9]+"# ["*"]
-    //   Int = (*) r#"[0-9]+"# ["+"]
-    //   Int = (*) r#"[0-9]+"# ["-"]
+    //   Float = (*) r#"-?[0-9]+\\.[0-9]+"# [EOF]
+    //   Float = (*) r#"-?[0-9]+\\.[0-9]+"# ["*"]
+    //   Float = (*) r#"-?[0-9]+\\.[0-9]+"# ["+"]
+    //   Float = (*) r#"-?[0-9]+\\.[0-9]+"# ["-"]
+    //   Int = (*) r#"-?[0-9]+"# [EOF]
+    //   Int = (*) r#"-?[0-9]+"# ["*"]
+    //   Int = (*) r#"-?[0-9]+"# ["+"]
+    //   Int = (*) r#"-?[0-9]+"# ["-"]
     //   MulExp = MulExp MulOp (*) Term [EOF]
     //   MulExp = MulExp MulOp (*) Term ["*"]
     //   MulExp = MulExp MulOp (*) Term ["+"]
@@ -836,8 +836,8 @@ mod __parse__Exp {
     //   Term = (*) "(" Exp ")" ["-"]
     //
     //   "(" -> Shift(S6)
-    //   r#"[0-9]+"# -> Shift(S7)
-    //   r#"[0-9]+\\.[0-9]+"# -> Shift(S8)
+    //   r#"-?[0-9]+"# -> Shift(S7)
+    //   r#"-?[0-9]+\\.[0-9]+"# -> Shift(S8)
     //
     //   Float -> S2
     //   Int -> S3
@@ -903,12 +903,12 @@ mod __parse__Exp {
 
     // State 13
     //   MulOp = "*" (*) ["("]
-    //   MulOp = "*" (*) [r#"[0-9]+"#]
-    //   MulOp = "*" (*) [r#"[0-9]+\\.[0-9]+"#]
+    //   MulOp = "*" (*) [r#"-?[0-9]+"#]
+    //   MulOp = "*" (*) [r#"-?[0-9]+\\.[0-9]+"#]
     //
     //   "(" -> Reduce(MulOp = "*" => Call(ActionFn(7));)
-    //   r#"[0-9]+"# -> Reduce(MulOp = "*" => Call(ActionFn(7));)
-    //   r#"[0-9]+\\.[0-9]+"# -> Reduce(MulOp = "*" => Call(ActionFn(7));)
+    //   r#"-?[0-9]+"# -> Reduce(MulOp = "*" => Call(ActionFn(7));)
+    //   r#"-?[0-9]+\\.[0-9]+"# -> Reduce(MulOp = "*" => Call(ActionFn(7));)
     //
     pub fn __state13<
         'input,
@@ -945,11 +945,11 @@ mod __parse__Exp {
 
     // State 14
     //   AddOp = (*) "+" ["("]
-    //   AddOp = (*) "+" [r#"[0-9]+"#]
-    //   AddOp = (*) "+" [r#"[0-9]+\\.[0-9]+"#]
+    //   AddOp = (*) "+" [r#"-?[0-9]+"#]
+    //   AddOp = (*) "+" [r#"-?[0-9]+\\.[0-9]+"#]
     //   AddOp = (*) "-" ["("]
-    //   AddOp = (*) "-" [r#"[0-9]+"#]
-    //   AddOp = (*) "-" [r#"[0-9]+\\.[0-9]+"#]
+    //   AddOp = (*) "-" [r#"-?[0-9]+"#]
+    //   AddOp = (*) "-" [r#"-?[0-9]+\\.[0-9]+"#]
     //   Exp = Exp (*) AddOp MulExp [")"]
     //   Exp = Exp (*) AddOp MulExp ["+"]
     //   Exp = Exp (*) AddOp MulExp ["-"]
@@ -1105,8 +1105,8 @@ mod __parse__Exp {
     //   MulExp = MulExp (*) MulOp Term ["+"]
     //   MulExp = MulExp (*) MulOp Term ["-"]
     //   MulOp = (*) "*" ["("]
-    //   MulOp = (*) "*" [r#"[0-9]+"#]
-    //   MulOp = (*) "*" [r#"[0-9]+\\.[0-9]+"#]
+    //   MulOp = (*) "*" [r#"-?[0-9]+"#]
+    //   MulOp = (*) "*" [r#"-?[0-9]+\\.[0-9]+"#]
     //
     //   ")" -> Reduce(Exp = MulExp => Call(ActionFn(2));)
     //   "*" -> Shift(S13)
@@ -1209,14 +1209,14 @@ mod __parse__Exp {
     //   Exp = (*) MulExp [")"]
     //   Exp = (*) MulExp ["+"]
     //   Exp = (*) MulExp ["-"]
-    //   Float = (*) r#"[0-9]+\\.[0-9]+"# [")"]
-    //   Float = (*) r#"[0-9]+\\.[0-9]+"# ["*"]
-    //   Float = (*) r#"[0-9]+\\.[0-9]+"# ["+"]
-    //   Float = (*) r#"[0-9]+\\.[0-9]+"# ["-"]
-    //   Int = (*) r#"[0-9]+"# [")"]
-    //   Int = (*) r#"[0-9]+"# ["*"]
-    //   Int = (*) r#"[0-9]+"# ["+"]
-    //   Int = (*) r#"[0-9]+"# ["-"]
+    //   Float = (*) r#"-?[0-9]+\\.[0-9]+"# [")"]
+    //   Float = (*) r#"-?[0-9]+\\.[0-9]+"# ["*"]
+    //   Float = (*) r#"-?[0-9]+\\.[0-9]+"# ["+"]
+    //   Float = (*) r#"-?[0-9]+\\.[0-9]+"# ["-"]
+    //   Int = (*) r#"-?[0-9]+"# [")"]
+    //   Int = (*) r#"-?[0-9]+"# ["*"]
+    //   Int = (*) r#"-?[0-9]+"# ["+"]
+    //   Int = (*) r#"-?[0-9]+"# ["-"]
     //   MulExp = (*) MulExp MulOp Term [")"]
     //   MulExp = (*) MulExp MulOp Term ["*"]
     //   MulExp = (*) MulExp MulOp Term ["+"]
@@ -1243,8 +1243,8 @@ mod __parse__Exp {
     //   Term = "(" (*) Exp ")" ["-"]
     //
     //   "(" -> Shift(S19)
-    //   r#"[0-9]+"# -> Shift(S20)
-    //   r#"[0-9]+\\.[0-9]+"# -> Shift(S21)
+    //   r#"-?[0-9]+"# -> Shift(S20)
+    //   r#"-?[0-9]+\\.[0-9]+"# -> Shift(S21)
     //
     //   Exp -> S27
     //   Float -> S15
@@ -1322,15 +1322,15 @@ mod __parse__Exp {
     }
 
     // State 20
-    //   Int = r#"[0-9]+"# (*) [")"]
-    //   Int = r#"[0-9]+"# (*) ["*"]
-    //   Int = r#"[0-9]+"# (*) ["+"]
-    //   Int = r#"[0-9]+"# (*) ["-"]
+    //   Int = r#"-?[0-9]+"# (*) [")"]
+    //   Int = r#"-?[0-9]+"# (*) ["*"]
+    //   Int = r#"-?[0-9]+"# (*) ["+"]
+    //   Int = r#"-?[0-9]+"# (*) ["-"]
     //
-    //   ")" -> Reduce(Int = r#"[0-9]+"# => Call(ActionFn(11));)
-    //   "*" -> Reduce(Int = r#"[0-9]+"# => Call(ActionFn(11));)
-    //   "+" -> Reduce(Int = r#"[0-9]+"# => Call(ActionFn(11));)
-    //   "-" -> Reduce(Int = r#"[0-9]+"# => Call(ActionFn(11));)
+    //   ")" -> Reduce(Int = r#"-?[0-9]+"# => Call(ActionFn(11));)
+    //   "*" -> Reduce(Int = r#"-?[0-9]+"# => Call(ActionFn(11));)
+    //   "+" -> Reduce(Int = r#"-?[0-9]+"# => Call(ActionFn(11));)
+    //   "-" -> Reduce(Int = r#"-?[0-9]+"# => Call(ActionFn(11));)
     //
     pub fn __state20<
         'input,
@@ -1367,15 +1367,15 @@ mod __parse__Exp {
     }
 
     // State 21
-    //   Float = r#"[0-9]+\\.[0-9]+"# (*) [")"]
-    //   Float = r#"[0-9]+\\.[0-9]+"# (*) ["*"]
-    //   Float = r#"[0-9]+\\.[0-9]+"# (*) ["+"]
-    //   Float = r#"[0-9]+\\.[0-9]+"# (*) ["-"]
+    //   Float = r#"-?[0-9]+\\.[0-9]+"# (*) [")"]
+    //   Float = r#"-?[0-9]+\\.[0-9]+"# (*) ["*"]
+    //   Float = r#"-?[0-9]+\\.[0-9]+"# (*) ["+"]
+    //   Float = r#"-?[0-9]+\\.[0-9]+"# (*) ["-"]
     //
-    //   ")" -> Reduce(Float = r#"[0-9]+\\.[0-9]+"# => Call(ActionFn(12));)
-    //   "*" -> Reduce(Float = r#"[0-9]+\\.[0-9]+"# => Call(ActionFn(12));)
-    //   "+" -> Reduce(Float = r#"[0-9]+\\.[0-9]+"# => Call(ActionFn(12));)
-    //   "-" -> Reduce(Float = r#"[0-9]+\\.[0-9]+"# => Call(ActionFn(12));)
+    //   ")" -> Reduce(Float = r#"-?[0-9]+\\.[0-9]+"# => Call(ActionFn(12));)
+    //   "*" -> Reduce(Float = r#"-?[0-9]+\\.[0-9]+"# => Call(ActionFn(12));)
+    //   "+" -> Reduce(Float = r#"-?[0-9]+\\.[0-9]+"# => Call(ActionFn(12));)
+    //   "-" -> Reduce(Float = r#"-?[0-9]+\\.[0-9]+"# => Call(ActionFn(12));)
     //
     pub fn __state21<
         'input,
@@ -1420,8 +1420,8 @@ mod __parse__Exp {
     //   MulExp = MulExp (*) MulOp Term ["+"]
     //   MulExp = MulExp (*) MulOp Term ["-"]
     //   MulOp = (*) "*" ["("]
-    //   MulOp = (*) "*" [r#"[0-9]+"#]
-    //   MulOp = (*) "*" [r#"[0-9]+\\.[0-9]+"#]
+    //   MulOp = (*) "*" [r#"-?[0-9]+"#]
+    //   MulOp = (*) "*" [r#"-?[0-9]+\\.[0-9]+"#]
     //
     //   EOF -> Reduce(Exp = Exp, AddOp, MulExp => Call(ActionFn(1));)
     //   "*" -> Shift(S13)
@@ -1529,14 +1529,14 @@ mod __parse__Exp {
     //   Exp = Exp AddOp (*) MulExp [")"]
     //   Exp = Exp AddOp (*) MulExp ["+"]
     //   Exp = Exp AddOp (*) MulExp ["-"]
-    //   Float = (*) r#"[0-9]+\\.[0-9]+"# [")"]
-    //   Float = (*) r#"[0-9]+\\.[0-9]+"# ["*"]
-    //   Float = (*) r#"[0-9]+\\.[0-9]+"# ["+"]
-    //   Float = (*) r#"[0-9]+\\.[0-9]+"# ["-"]
-    //   Int = (*) r#"[0-9]+"# [")"]
-    //   Int = (*) r#"[0-9]+"# ["*"]
-    //   Int = (*) r#"[0-9]+"# ["+"]
-    //   Int = (*) r#"[0-9]+"# ["-"]
+    //   Float = (*) r#"-?[0-9]+\\.[0-9]+"# [")"]
+    //   Float = (*) r#"-?[0-9]+\\.[0-9]+"# ["*"]
+    //   Float = (*) r#"-?[0-9]+\\.[0-9]+"# ["+"]
+    //   Float = (*) r#"-?[0-9]+\\.[0-9]+"# ["-"]
+    //   Int = (*) r#"-?[0-9]+"# [")"]
+    //   Int = (*) r#"-?[0-9]+"# ["*"]
+    //   Int = (*) r#"-?[0-9]+"# ["+"]
+    //   Int = (*) r#"-?[0-9]+"# ["-"]
     //   MulExp = (*) MulExp MulOp Term [")"]
     //   MulExp = (*) MulExp MulOp Term ["*"]
     //   MulExp = (*) MulExp MulOp Term ["+"]
@@ -1559,8 +1559,8 @@ mod __parse__Exp {
     //   Term = (*) "(" Exp ")" ["-"]
     //
     //   "(" -> Shift(S19)
-    //   r#"[0-9]+"# -> Shift(S20)
-    //   r#"[0-9]+\\.[0-9]+"# -> Shift(S21)
+    //   r#"-?[0-9]+"# -> Shift(S20)
+    //   r#"-?[0-9]+\\.[0-9]+"# -> Shift(S21)
     //
     //   Float -> S15
     //   Int -> S16
@@ -1679,14 +1679,14 @@ mod __parse__Exp {
     }
 
     // State 26
-    //   Float = (*) r#"[0-9]+\\.[0-9]+"# [")"]
-    //   Float = (*) r#"[0-9]+\\.[0-9]+"# ["*"]
-    //   Float = (*) r#"[0-9]+\\.[0-9]+"# ["+"]
-    //   Float = (*) r#"[0-9]+\\.[0-9]+"# ["-"]
-    //   Int = (*) r#"[0-9]+"# [")"]
-    //   Int = (*) r#"[0-9]+"# ["*"]
-    //   Int = (*) r#"[0-9]+"# ["+"]
-    //   Int = (*) r#"[0-9]+"# ["-"]
+    //   Float = (*) r#"-?[0-9]+\\.[0-9]+"# [")"]
+    //   Float = (*) r#"-?[0-9]+\\.[0-9]+"# ["*"]
+    //   Float = (*) r#"-?[0-9]+\\.[0-9]+"# ["+"]
+    //   Float = (*) r#"-?[0-9]+\\.[0-9]+"# ["-"]
+    //   Int = (*) r#"-?[0-9]+"# [")"]
+    //   Int = (*) r#"-?[0-9]+"# ["*"]
+    //   Int = (*) r#"-?[0-9]+"# ["+"]
+    //   Int = (*) r#"-?[0-9]+"# ["-"]
     //   MulExp = MulExp MulOp (*) Term [")"]
     //   MulExp = MulExp MulOp (*) Term ["*"]
     //   MulExp = MulExp MulOp (*) Term ["+"]
@@ -1705,8 +1705,8 @@ mod __parse__Exp {
     //   Term = (*) "(" Exp ")" ["-"]
     //
     //   "(" -> Shift(S19)
-    //   r#"[0-9]+"# -> Shift(S20)
-    //   r#"[0-9]+\\.[0-9]+"# -> Shift(S21)
+    //   r#"-?[0-9]+"# -> Shift(S20)
+    //   r#"-?[0-9]+\\.[0-9]+"# -> Shift(S21)
     //
     //   Float -> S15
     //   Int -> S16
@@ -1772,11 +1772,11 @@ mod __parse__Exp {
 
     // State 27
     //   AddOp = (*) "+" ["("]
-    //   AddOp = (*) "+" [r#"[0-9]+"#]
-    //   AddOp = (*) "+" [r#"[0-9]+\\.[0-9]+"#]
+    //   AddOp = (*) "+" [r#"-?[0-9]+"#]
+    //   AddOp = (*) "+" [r#"-?[0-9]+\\.[0-9]+"#]
     //   AddOp = (*) "-" ["("]
-    //   AddOp = (*) "-" [r#"[0-9]+"#]
-    //   AddOp = (*) "-" [r#"[0-9]+\\.[0-9]+"#]
+    //   AddOp = (*) "-" [r#"-?[0-9]+"#]
+    //   AddOp = (*) "-" [r#"-?[0-9]+\\.[0-9]+"#]
     //   Exp = Exp (*) AddOp MulExp [")"]
     //   Exp = Exp (*) AddOp MulExp ["+"]
     //   Exp = Exp (*) AddOp MulExp ["-"]
@@ -1850,8 +1850,8 @@ mod __parse__Exp {
     //   MulExp = MulExp (*) MulOp Term ["+"]
     //   MulExp = MulExp (*) MulOp Term ["-"]
     //   MulOp = (*) "*" ["("]
-    //   MulOp = (*) "*" [r#"[0-9]+"#]
-    //   MulOp = (*) "*" [r#"[0-9]+\\.[0-9]+"#]
+    //   MulOp = (*) "*" [r#"-?[0-9]+"#]
+    //   MulOp = (*) "*" [r#"-?[0-9]+\\.[0-9]+"#]
     //
     //   ")" -> Reduce(Exp = Exp, AddOp, MulExp => Call(ActionFn(1));)
     //   "*" -> Shift(S13)
@@ -2137,6 +2137,56 @@ mod __intern_token {
                 5 => {
                     let (__index, __ch) = match __chars.next() { Some(p) => p, None => return __current_match };
                     match __ch {
+                        '0' => {
+                            __current_match = Some((5, __index + 1));
+                            __current_state = 6;
+                            continue;
+                        }
+                        '1' => {
+                            __current_match = Some((5, __index + 1));
+                            __current_state = 6;
+                            continue;
+                        }
+                        '2' => {
+                            __current_match = Some((5, __index + 1));
+                            __current_state = 6;
+                            continue;
+                        }
+                        '3' => {
+                            __current_match = Some((5, __index + 1));
+                            __current_state = 6;
+                            continue;
+                        }
+                        '4' => {
+                            __current_match = Some((5, __index + 1));
+                            __current_state = 6;
+                            continue;
+                        }
+                        '5' => {
+                            __current_match = Some((5, __index + 1));
+                            __current_state = 6;
+                            continue;
+                        }
+                        '6' => {
+                            __current_match = Some((5, __index + 1));
+                            __current_state = 6;
+                            continue;
+                        }
+                        '7' => {
+                            __current_match = Some((5, __index + 1));
+                            __current_state = 6;
+                            continue;
+                        }
+                        '8' => {
+                            __current_match = Some((5, __index + 1));
+                            __current_state = 6;
+                            continue;
+                        }
+                        '9' => {
+                            __current_match = Some((5, __index + 1));
+                            __current_state = 6;
+                            continue;
+                        }
                         _ => {
                             return __current_match;
                         }
