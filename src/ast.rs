@@ -21,6 +21,13 @@ impl BinOp {
             &BinOp::Plus | &BinOp::Minus => Precedence::Add,
         }
     }
+
+    pub fn is_commutative(&self) -> bool {
+        match self {
+            &BinOp::Minus => false,
+            _ => true
+        }
+    }
 }
 
 impl Display for BinOp {
@@ -57,13 +64,20 @@ impl Display for Exp {
             &Exp::BinExp(ref e1, ref o, ref e2) => {
                 let prec = self.precedence();
 
+                // Put grouping parentheses if the left subexpression has a lower-precedence
+                // operator, e.g. (1 + 2) * 3
                 let left = if prec > e1.precedence() {
                     format!("({})", e1)
                 } else {
                     format!("{}", e1)
                 };
 
-                let right = if prec > e2.precedence() {
+                let right_prec = e2.precedence();
+
+                // Put grouping parentheses around the right subexpression if it has a
+                // lower-precedence operator,  __OR__ if `o` is not commutative and the precedence
+                // is the same, e.g. (1 + 2) * 3 __OR__ 1 - (2 + 3) 
+                let right = if prec > right_prec || (!o.is_commutative() && prec == right_prec) {
                     format!("({})", e2)
                 } else {
                     format!("{}", e2)
