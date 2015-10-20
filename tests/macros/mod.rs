@@ -3,5 +3,5 @@ macro_rules! exp {
 }
 
 macro_rules! parse_exp {
-    ($s:expr) => { &*parse_Exp($s).unwrap() }
+    ($s:expr) => { parse_Exp($s).unwrap() }
 }

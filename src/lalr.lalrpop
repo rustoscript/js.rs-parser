@@ -10,7 +10,7 @@ pub Stmt: Stmt = {
 };
 
 // Expression nonterminal
-Exp: Exp = {
+pub Exp: Exp = {
     <e:Exp> <o:AddOp> <m:MulExp> => Exp::BinExp(Box::new(e), o, Box::new(m)),
     MulExp,
 };

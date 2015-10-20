@@ -1,6 +1,6 @@
 extern crate jsrs_parser;
 
-use jsrs_parser::arith::parse_Stmt;
+use jsrs_parser::lalr::parse_Stmt;
 use std::io;
 
 fn main() {
