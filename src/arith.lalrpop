@@ -1,13 +1,17 @@
 use std::str::FromStr;
-use ast::{BinOp, Exp};
+use ast::{BinOp, Exp, Stmt};
 
 grammar;
 
-// Top-level expression nonterminal
-//
-// Parses addition/subtraction expressions
-pub Exp: Box<Exp> = {
-    Exp AddOp MulExp => Box::new(Exp::BinExp(<>)),
+// Statement nonterminal
+pub Stmt: Stmt = {
+    <Var> "=" <Exp>  ";" => Stmt::Assign(<>),
+    "var" <Var> "=" <Exp> ";" => Stmt::Decl(<>),
+};
+
+// Expression nonterminal
+Exp: Exp = {
+    <e:Exp> <o:AddOp> <m:MulExp> => Exp::BinExp(Box::new(e), o, Box::new(m)),
     MulExp,
 };
 
@@ -17,8 +21,8 @@ AddOp: BinOp = {
 };
 
 // Parses multiplication
-MulExp: Box<Exp> = {
-    MulExp MulOp Term => Box::new(Exp::BinExp(<>)),
+MulExp: Exp = {
+    <m:MulExp> <o:MulOp> <t:Term> => Exp::BinExp(Box::new(m), o, Box::new(t)),
     Term,
 };
 
@@ -27,9 +31,10 @@ MulOp: BinOp = {
 };
 
 // Parses numbers and parenthetical expressions
-Term: Box<Exp> = {
-    Int => Box::new(Exp::Int(<>)),
-    Float => Box::new(Exp::Float(<>)),
+Term: Exp = {
+    Int => Exp::Int(<>),
+    Float => Exp::Float(<>),
+    Var => Exp::Var(<>),
     "(" <Exp> ")",
 };
 
@@ -39,4 +44,8 @@ Int: i64 = {
 
 Float: f64 = {
     r"-?[0-9]+\.[0-9]+" => f64::from_str(<>).unwrap()
+};
+
+Var: String = {
+    r"[A-Za-z_][0-9A-Za-z_]*" => <>.to_owned()
 };
