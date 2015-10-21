@@ -2,6 +2,10 @@ use jsrs_parser::ast::Exp::{self, BinExp, Float, Int, Var};
 use jsrs_parser::ast::Stmt::{self, Assign, Decl};
 use nalgebra::ApproxEq;
 
+macro_rules! assert_mostly_eq {
+    ($e1:expr, $e2:expr) => { $e1.mostly_eq($e2) }
+}
+
 // Checks for equality between two values where an exact equality cannot be found (i.e. with
 // floats)
 pub trait MostlyEq {

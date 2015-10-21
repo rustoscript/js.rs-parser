@@ -3,8 +3,9 @@ extern crate jsrs_parser;
 
 #[macro_use]
 mod macros;
+#[macro_use]
+mod mostlyeq;
 
 mod exp;
-mod mostlyeq;
 mod precedence;
 mod stmt;

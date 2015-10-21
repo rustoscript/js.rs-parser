@@ -1,13 +1,9 @@
 use ::mostlyeq::MostlyEq;
 
 use jsrs_parser::lalr::parse_Exp;
-use jsrs_parser::ast::Exp::{self, Int, Float, BinExp};
-use jsrs_parser::ast::BinOp::{Star, Plus, Minus};
+use jsrs_parser::ast::Exp::*;
+use jsrs_parser::ast::BinOp::*;
 
-
-macro_rules! assert_mostly_eq {
-    ($e1:expr, $e2:expr) => { $e1.mostly_eq($e2) }
-}
 
 #[test]
 fn bare_int() {
