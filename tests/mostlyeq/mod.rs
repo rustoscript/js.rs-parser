@@ -1,4 +1,5 @@
-use jsrs_parser::ast::Exp::{self, BinExp, Float, Int, Var };
+use jsrs_parser::ast::Exp::{self, BinExp, Float, Int, Var};
+use jsrs_parser::ast::Stmt::{self, Assign, Decl};
 use nalgebra::ApproxEq;
 
 // Checks for equality between two values where an exact equality cannot be found (i.e. with
@@ -15,6 +16,16 @@ impl MostlyEq for Exp {
             (&Float(f1), &Float(f2)) => f1.approx_eq(&f2),
             (&Int(i1), &Int(i2)) => i1 == i2,
             (&Var(ref v1), &Var(ref v2)) => v1 == v2,
+            _ => false
+        }
+    }
+}
+
+impl MostlyEq for Stmt {
+    fn mostly_eq(&self, other: &Self) -> bool {
+        match (self, other) {
+            (&Assign(ref v1, ref e1), &Assign(ref v2, ref e2)) |
+            (&Decl(ref v1, ref e1), &Decl(ref v2, ref e2)) => v1 == v2 && e1.mostly_eq(e2),
             _ => false
         }
     }
