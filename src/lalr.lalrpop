@@ -28,22 +28,18 @@ MulExp: Exp = {
 
 MulOp: BinOp = {
     "*" => BinOp::Star,
+    "/" => BinOp::Slash,
 };
 
 // Parses numbers and parenthetical expressions
 Term: Exp = {
-    Int => Exp::Int(<>),
     Float => Exp::Float(<>),
     Var => Exp::Var(<>),
     "(" <Exp> ")",
 };
 
-Int: i64 = {
-    r"-?[0-9]+" => i64::from_str(<>).unwrap()
-};
-
 Float: f64 = {
-    r"-?[0-9]+\.[0-9]+" => f64::from_str(<>).unwrap()
+    r"-?[0-9]+(\.[0-9]+)?" => f64::from_str(<>).unwrap()
 };
 
 Var: String = {

@@ -2,8 +2,8 @@
 name = "jsrs-parser"
 version = "0.1.0"
 dependencies = [
- "lalrpop 0.6.1 (registry+https://github.com/rust-lang/crates.io-index)",
- "lalrpop-util 0.6.1 (registry+https://github.com/rust-lang/crates.io-index)",
+ "lalrpop 0.7.0 (registry+https://github.com/rust-lang/crates.io-index)",
+ "lalrpop-util 0.7.0 (registry+https://github.com/rust-lang/crates.io-index)",
  "nalgebra 0.3.1 (registry+https://github.com/rust-lang/crates.io-index)",
 ]
 
@@ -45,14 +45,14 @@ dependencies = [
 
 [[package]]
 name = "lalrpop"
-version = "0.6.1"
+version = "0.7.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 dependencies = [
  "diff 0.1.7 (registry+https://github.com/rust-lang/crates.io-index)",
  "itertools 0.3.25 (registry+https://github.com/rust-lang/crates.io-index)",
- "lalrpop-intern 0.6.1 (registry+https://github.com/rust-lang/crates.io-index)",
- "lalrpop-snap 0.6.1 (registry+https://github.com/rust-lang/crates.io-index)",
- "lalrpop-util 0.6.1 (registry+https://github.com/rust-lang/crates.io-index)",
+ "lalrpop-intern 0.7.0 (registry+https://github.com/rust-lang/crates.io-index)",
+ "lalrpop-snap 0.7.0 (registry+https://github.com/rust-lang/crates.io-index)",
+ "lalrpop-util 0.7.0 (registry+https://github.com/rust-lang/crates.io-index)",
  "rand 0.3.11 (registry+https://github.com/rust-lang/crates.io-index)",
  "regex 0.1.41 (registry+https://github.com/rust-lang/crates.io-index)",
  "term 0.2.12 (registry+https://github.com/rust-lang/crates.io-index)",
@@ -61,18 +61,18 @@ dependencies = [
 
 [[package]]
 name = "lalrpop-intern"
-version = "0.6.1"
+version = "0.7.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 
 [[package]]
 name = "lalrpop-snap"
-version = "0.6.1"
+version = "0.7.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 dependencies = [
  "diff 0.1.7 (registry+https://github.com/rust-lang/crates.io-index)",
  "itertools 0.3.25 (registry+https://github.com/rust-lang/crates.io-index)",
- "lalrpop-intern 0.6.1 (registry+https://github.com/rust-lang/crates.io-index)",
- "lalrpop-util 0.6.1 (registry+https://github.com/rust-lang/crates.io-index)",
+ "lalrpop-intern 0.7.0 (registry+https://github.com/rust-lang/crates.io-index)",
+ "lalrpop-util 0.7.0 (registry+https://github.com/rust-lang/crates.io-index)",
  "rand 0.3.11 (registry+https://github.com/rust-lang/crates.io-index)",
  "regex 0.1.41 (registry+https://github.com/rust-lang/crates.io-index)",
  "rusty-peg 0.3.0 (registry+https://github.com/rust-lang/crates.io-index)",
@@ -82,7 +82,7 @@ dependencies = [
 
 [[package]]
 name = "lalrpop-util"
-version = "0.6.1"
+version = "0.7.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 
 [[package]]

@@ -11,7 +11,7 @@ macro_rules! decl {
 }
 
 macro_rules! var {
-    ($s:expr) => { Var(String::from($s) }
+    ($s:expr) => { Var(String::from($s)) }
 }
 
 macro_rules! parse_exp {

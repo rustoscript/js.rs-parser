@@ -2,8 +2,9 @@ use std::fmt::{Display, Error, Formatter};
 
 #[derive(Debug, PartialEq, Eq)]
 pub enum BinOp {
-    Plus,
     Minus,
+    Plus,
+    Slash,
     Star,
 }
 
@@ -17,14 +18,14 @@ pub enum Precedence {
 impl BinOp {
     pub fn precedence(&self) -> Precedence {
         match *self {
-            BinOp::Plus | BinOp::Minus => Precedence::Add,
-            BinOp::Star => Precedence::Mult,
+            BinOp::Minus | BinOp::Plus => Precedence::Add,
+            BinOp::Slash | BinOp::Star => Precedence::Mult,
         }
     }
 
     pub fn is_commutative(&self) -> bool {
         match *self {
-            BinOp::Minus => false,
+            BinOp::Minus | BinOp::Slash => false,
             _ => true
         }
     }
@@ -33,8 +34,9 @@ impl BinOp {
 impl Display for BinOp {
     fn fmt(&self, fmt: &mut Formatter) -> Result<(), Error> {
         match *self {
-            BinOp::Plus => write!(fmt, "+"),
             BinOp::Minus => write!(fmt, "-"),
+            BinOp::Plus => write!(fmt, "+"),
+            BinOp::Slash => write!(fmt, "/"),
             BinOp::Star => write!(fmt, "*"),
         }
     }
@@ -43,7 +45,6 @@ impl Display for BinOp {
 #[derive(Debug)]
 pub enum Exp {
     BinExp(Box<Exp>, BinOp, Box<Exp>),
-    Int(i64),
     Float(f64),
     Var(String),
 }
@@ -52,7 +53,7 @@ impl Exp {
     pub fn precedence(&self) -> Precedence {
         match *self {
             Exp::BinExp(_, ref o, _) => o.precedence(),
-            Exp::Int(_) | Exp::Float(_) | Exp::Var(_) => Precedence::Const,
+            Exp::Float(_) | Exp::Var(_) => Precedence::Const,
         }
     }
 }
@@ -84,7 +85,6 @@ impl Display for Exp {
 
                 write!(fmt, "{} {} {}", left, o, right)
             }
-            Exp::Int(i)     => write!(fmt, "{}", i),
             Exp::Float(f)   => write!(fmt, "{}", f),
             Exp::Var(ref v) => write!(fmt, "{}", v),
 
