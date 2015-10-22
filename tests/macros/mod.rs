@@ -3,15 +3,15 @@ macro_rules! exp {
 }
 
 macro_rules! assign {
-    ($v:expr, $e:expr) => { Assign($v.to_owned(), $e) }
+    ($v:expr, $e:expr) => { Assign(String::from($v), $e) }
 }
 
 macro_rules! decl {
-    ($v:expr, $e:expr) => { Decl($v.to_owned(), $e) }
+    ($v:expr, $e:expr) => { Decl(String::from($v), $e) }
 }
 
 macro_rules! var {
-    ($s:expr) => { Var($s.to_owned()) }
+    ($s:expr) => { Var(String::from($s) }
 }
 
 macro_rules! parse_exp {

@@ -47,5 +47,5 @@ Float: f64 = {
 };
 
 Var: String = {
-    r"[A-Za-z_][0-9A-Za-z_]*" => <>.to_owned()
+    r"[A-Za-z_][0-9A-Za-z_]*" => String::from(<>)
 };

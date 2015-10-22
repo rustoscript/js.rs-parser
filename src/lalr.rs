@@ -7395,7 +7395,7 @@ pub fn __action17<
     __0: &'input str,
 ) -> String
 {
-    __0.to_owned()
+    String::from(__0)
 }
 
 pub trait __ToTriple<'input, > {
