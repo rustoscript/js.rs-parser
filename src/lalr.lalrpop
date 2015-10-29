@@ -36,6 +36,7 @@ MulOp: BinOp = {
 Term: Exp = {
     Float => Exp::Float(<>),
     Var => Exp::Var(<>),
+    "undefined" => Exp::Undefined,
     "(" <Exp> ")",
 };
 

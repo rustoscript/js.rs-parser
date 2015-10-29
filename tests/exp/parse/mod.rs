@@ -59,3 +59,8 @@ fn multi_binop_exprs() {
     assert_mostly_eq!(exp!(Float(3.7), Star, exp!(exp!(Float(4.0), Plus, Float(2.0)), Slash, Float(11.0))),
                       &parse_exp!("3.7 * ((4 + 2) / 11)"));
 }
+
+#[test]
+fn undefined() {
+    assert_mostly_eq!(Undefined, &parse_exp!("undefined"));
+}

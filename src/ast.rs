@@ -47,13 +47,14 @@ pub enum Exp {
     BinExp(Box<Exp>, BinOp, Box<Exp>),
     Float(f64),
     Var(String),
+    Undefined,
 }
 
 impl Exp {
     pub fn precedence(&self) -> Precedence {
         match *self {
             Exp::BinExp(_, ref o, _) => o.precedence(),
-            Exp::Float(_) | Exp::Var(_) => Precedence::Const,
+            Exp::Undefined | Exp::Float(_) | Exp::Var(_) => Precedence::Const,
         }
     }
 }
@@ -87,7 +88,7 @@ impl Display for Exp {
             }
             Exp::Float(f)   => write!(fmt, "{}", f),
             Exp::Var(ref v) => write!(fmt, "{}", v),
-
+            Exp::Undefined => write!(fmt, "undefined"),
         }
     }
 }
