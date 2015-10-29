@@ -3,6 +3,7 @@ use jsrs_parser::ast::BinOp::*;
 use jsrs_parser::ast::Exp::*;
 use jsrs_parser::ast::Stmt::*;
 use jsrs_parser::lalr::parse_Stmt;
+use jsrs_parser::lalr::parse_Exp;
 
 #[test]
 fn assign_num() {
@@ -51,4 +52,11 @@ fn assign_multi_binop() {
         &parse_stmt!("anotherNumber = 3.7 * (4 + 2 / 11);"));
     assert_mostly_eq!(assign!("e_4_4", exp!(Float(3.7), Slash, exp!(exp!(Float(4.0), Plus, Float(2.0)), Star, Float(11.0)))),
         &parse_stmt!("e_4_4 = 3.7 / ((4 + 2) * 11);"));
+}
+
+#[test]
+fn assign_bare_exp() {
+    assert_mostly_eq!(bare_exp!("5"), &parse_stmt!("5;"));
+    assert_mostly_eq!(bare_exp!("4+4"), &parse_stmt!("4+4;"));
+    assert_mostly_eq!(bare_exp!("a"), &parse_stmt!("a;"));
 }

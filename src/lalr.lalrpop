@@ -7,6 +7,7 @@ grammar;
 pub Stmt: Stmt = {
     <Var> "=" <Exp>  ";" => Stmt::Assign(<>),
     "var" <Var> "=" <Exp> ";" => Stmt::Decl(<>),
+    <Exp> ";" => Stmt::BareExp(<>),
 };
 
 // Expression nonterminal

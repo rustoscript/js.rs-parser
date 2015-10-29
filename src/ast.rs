@@ -96,6 +96,7 @@ impl Display for Exp {
 pub enum Stmt {
     Assign(String, Exp),
     Decl(String, Exp),
+    BareExp(Exp)
 }
 
 impl Display for Stmt {
@@ -103,6 +104,7 @@ impl Display for Stmt {
         match *self {
             Stmt::Assign(ref v, ref exp) => write!(fmt, "{} = {};\n", v, exp),
             Stmt::Decl(ref v, ref exp) => write!(fmt, "var {} = {};\n", v, exp),
+            Stmt::BareExp(ref exp) => write!(fmt, "{};\n", exp),
         }
     }
 }

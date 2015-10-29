@@ -10,6 +10,10 @@ macro_rules! decl {
     ($v:expr, $e:expr) => { Decl(String::from($v), $e) }
 }
 
+macro_rules! bare_exp {
+    ($e:expr) => { BareExp(parse_exp!($e)) }
+}
+
 macro_rules! var {
     ($s:expr) => { Var(String::from($s)) }
 }
