@@ -10,7 +10,8 @@ pub enum BinOp {
 
 #[derive(PartialEq, Eq, PartialOrd, Ord)]
 pub enum Precedence {
-    Const = 100,
+    Const = 110,
+    Inc = 100,
     Mult = 60,
     Add = 50,
 }
@@ -47,6 +48,10 @@ pub enum Exp {
     BinExp(Box<Exp>, BinOp, Box<Exp>),
     Float(f64),
     Var(String),
+    PostDec(Box<Exp>),
+    PostInc(Box<Exp>),
+    PreDec(Box<Exp>),
+    PreInc(Box<Exp>),
 }
 
 impl Exp {
@@ -54,6 +59,7 @@ impl Exp {
         match *self {
             Exp::BinExp(_, ref o, _) => o.precedence(),
             Exp::Float(_) | Exp::Var(_) => Precedence::Const,
+            Exp::PostDec(_) | Exp::PostInc(_) | Exp::PreDec(_) | Exp::PreInc(_) => Precedence::Inc,
         }
     }
 }
@@ -87,7 +93,10 @@ impl Display for Exp {
             }
             Exp::Float(f)   => write!(fmt, "{}", f),
             Exp::Var(ref v) => write!(fmt, "{}", v),
-
+            Exp::PostDec(ref e) => write!(fmt, "{}--", e),
+            Exp::PostInc(ref e) => write!(fmt, "{}++", e),
+            Exp::PreDec(ref e) => write!(fmt, "--{}", e),
+            Exp::PreInc(ref e) => write!(fmt, "++{}", e),
         }
     }
 }
