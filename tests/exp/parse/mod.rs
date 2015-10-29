@@ -4,19 +4,27 @@ use jsrs_parser::lalr::parse_Exp;
 use jsrs_parser::ast::Exp::*;
 use jsrs_parser::ast::BinOp::*;
 
+use std::f64::NAN;
+
 
 #[test]
 fn bare_float() {
-    assert_mostly_eq!(Float(-11.01), &parse_exp!("-11.01"));
-    assert_mostly_eq!(Float(-4.0), &parse_exp!("-4.0"));
-    assert_mostly_eq!(Float(-4.0221), &parse_exp!("-4.0221"));
-    assert_mostly_eq!(Float(-0.56), &parse_exp!("-0.56"));
+    assert_mostly_eq!(Float(2.0), &parse_exp!("2"));
+    assert_mostly_eq!(Float(2.0), &parse_exp!("2."));
+    assert_mostly_eq!(Float(2.0), &parse_exp!("2.0"));
+    assert_mostly_eq!(Float(0.2), &parse_exp!("0.2"));
+    assert_mostly_eq!(Float(0.2), &parse_exp!(".2"));
+
     assert_mostly_eq!(Float(0.0), &parse_exp!("-0.0"));
     assert_mostly_eq!(Float(0.0), &parse_exp!("0.0"));
-    assert_mostly_eq!(Float(0.1), &parse_exp!("0.1"));
-    assert_mostly_eq!(Float(0.733), &parse_exp!("0.0733"));
-    assert_mostly_eq!(Float(8.927), &parse_exp!("8.927"));
-    assert_mostly_eq!(Float(34.68), &parse_exp!("34.68"));
+
+    assert_mostly_eq!(Float(-2.0), &parse_exp!("-2"));
+    assert_mostly_eq!(Float(-2.0), &parse_exp!("-2."));
+    assert_mostly_eq!(Float(-2.0), &parse_exp!("-2.0"));
+    assert_mostly_eq!(Float(-0.2), &parse_exp!("-0.2"));
+    assert_mostly_eq!(Float(-0.2), &parse_exp!("-.2"));
+
+    assert_mostly_eq!(Float(NAN), &parse_exp!("NaN"));
 }
 
 #[test]
