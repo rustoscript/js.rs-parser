@@ -31,7 +31,7 @@ MulOp: BinOp = {
     "/" => BinOp::Slash,
 };
 
-// Parses numbers and parenthetical expressions
+// Parses numbers and parenthetical expressions, and variables
 Term: Exp = {
     Float => Exp::Float(<>),
     Var => Exp::Var(<>),
