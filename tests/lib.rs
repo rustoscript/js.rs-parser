@@ -7,5 +7,6 @@ mod macros;
 mod mostlyeq;
 
 mod exp;
+mod format;
 mod precedence;
 mod stmt;
