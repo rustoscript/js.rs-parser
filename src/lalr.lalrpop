@@ -25,12 +25,22 @@ AddOp: BinOp = {
 // Parses multiplication
 MulExp: Exp = {
     <m:MulExp> <o:MulOp> <t:Term> => Exp::BinExp(Box::new(m), o, Box::new(t)),
-    Term,
+    PreExp,
 };
 
 MulOp: BinOp = {
     "*" => BinOp::Star,
     "/" => BinOp::Slash,
+};
+
+PreExp: Exp = {
+    "++" <PostExp> => Exp::PreInc(Box::new(<>)),
+    PostExp,
+};
+
+PostExp: Exp = {
+    <Term> "++" => Exp::PostInc(Box::new(<>)),
+    Term,
 };
 
 // Parses numbers and parenthetical expressions, and variables
@@ -40,6 +50,7 @@ Term: Exp = {
     "undefined" => Exp::Undefined,
     "(" <Exp> ")",
 };
+
 
 Float: f64 = {
     // '2' or '2.'
