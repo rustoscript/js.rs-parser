@@ -1,4 +1,4 @@
-use jsrs_parser::ast::Exp::{self, BinExp, Float, Var};
+use jsrs_parser::ast::Exp::{self, BinExp, Float, Var, Undefined};
 use jsrs_parser::ast::Stmt::{self, Assign, Decl};
 use nalgebra::ApproxEq;
 
@@ -19,6 +19,7 @@ impl MostlyEq for Exp {
                 (&*a1).mostly_eq(a2) && o1 == o2 && (&*b1).mostly_eq(&*b2),
             (&Float(f1), &Float(f2)) => f1.approx_eq(&f2),
             (&Var(ref v1), &Var(ref v2)) => v1 == v2,
+            (&Undefined, &Undefined) => true,
             _ => false
         }
     }

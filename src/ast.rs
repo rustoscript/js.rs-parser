@@ -52,14 +52,15 @@ pub enum Exp {
     PostInc(Box<Exp>),
     PreDec(Box<Exp>),
     PreInc(Box<Exp>),
+    Undefined,
 }
 
 impl Exp {
     pub fn precedence(&self) -> Precedence {
         match *self {
             Exp::BinExp(_, ref o, _) => o.precedence(),
-            Exp::Float(_) | Exp::Var(_) => Precedence::Const,
             Exp::PostDec(_) | Exp::PostInc(_) | Exp::PreDec(_) | Exp::PreInc(_) => Precedence::Inc,
+            Exp::Undefined | Exp::Float(_) | Exp::Var(_) => Precedence::Const,
         }
     }
 }
@@ -97,6 +98,7 @@ impl Display for Exp {
             Exp::PostInc(ref e) => write!(fmt, "{}++", e),
             Exp::PreDec(ref e) => write!(fmt, "--{}", e),
             Exp::PreInc(ref e) => write!(fmt, "++{}", e),
+            Exp::Undefined => write!(fmt, "undefined"),
         }
     }
 }
@@ -105,6 +107,7 @@ impl Display for Exp {
 pub enum Stmt {
     Assign(String, Exp),
     Decl(String, Exp),
+    BareExp(Exp)
 }
 
 impl Display for Stmt {
@@ -112,6 +115,7 @@ impl Display for Stmt {
         match *self {
             Stmt::Assign(ref v, ref exp) => write!(fmt, "{} = {};\n", v, exp),
             Stmt::Decl(ref v, ref exp) => write!(fmt, "var {} = {};\n", v, exp),
+            Stmt::BareExp(ref exp) => write!(fmt, "{};\n", exp),
         }
     }
 }

@@ -1,4 +1,5 @@
 use std::str::FromStr;
+use std::f64::NAN;
 use ast::{BinOp, Exp, Stmt};
 
 grammar;
@@ -7,6 +8,7 @@ grammar;
 pub Stmt: Stmt = {
     <Var> "=" <Exp>  ";" => Stmt::Assign(<>),
     "var" <Var> "=" <Exp> ";" => Stmt::Decl(<>),
+    <Exp> ";" => Stmt::BareExp(<>),
 };
 
 // Expression nonterminal
@@ -35,11 +37,16 @@ MulOp: BinOp = {
 Term: Exp = {
     Float => Exp::Float(<>),
     Var => Exp::Var(<>),
+    "undefined" => Exp::Undefined,
     "(" <Exp> ")",
 };
 
 Float: f64 = {
-    r"-?[0-9]+(\.[0-9]+)?" => f64::from_str(<>).unwrap()
+    // '2' or '2.'
+    r"-?[0-9]+\.?" => f64::from_str(<>).unwrap(),
+    // '.2' or '2.0'
+    r"-?[0-9]*\.[0-9]+" => f64::from_str(<>).unwrap(),
+    "NaN" => NAN
 };
 
 Var: String = {
