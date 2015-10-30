@@ -47,12 +47,12 @@ impl Display for BinOp {
 pub enum Exp {
     BinExp(Box<Exp>, BinOp, Box<Exp>),
     Float(f64),
-    Var(String),
     PostDec(Box<Exp>),
     PostInc(Box<Exp>),
     PreDec(Box<Exp>),
     PreInc(Box<Exp>),
     Undefined,
+    Var(String),
 }
 
 impl Exp {
@@ -106,8 +106,8 @@ impl Display for Exp {
 #[derive(Debug)]
 pub enum Stmt {
     Assign(String, Exp),
+    BareExp(Exp),
     Decl(String, Exp),
-    BareExp(Exp)
 }
 
 impl Display for Stmt {
