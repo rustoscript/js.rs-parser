@@ -1,9 +1,22 @@
 use jsrs_parser::ast::BinOp::*;
 use jsrs_parser::ast::Exp::*;
+use jsrs_parser::ast::Stmt::*;
 use std::f64::NAN;
 
 macro_rules! format_exp {
     ($e1:expr, $o:expr, $e2:expr) => { &format!("{}", exp!($e1, $o, $e2)) }
+}
+
+macro_rules! format_assign {
+    ($s:expr, $e:expr) => { &format!("{}", Assign(String::from($s), $e)) }
+}
+
+macro_rules! format_bare_exp {
+    ($e:expr) => { &format!("{}", BareExp($e)) }
+}
+
+macro_rules! format_decl {
+    ($s:expr, $e:expr) => { &format!("{}", Decl(String::from($s), $e)) }
 }
 
 #[test]
@@ -57,4 +70,41 @@ fn multi_binop_exprs_with_grouping() {
         format_exp!(exp!(exp!(Float(-10.0), Plus, Float(18.5)), Minus, Float(17.0)), Star, Float(-3.25)));
     assert_eq!("(-10 - (18.5 - 17)) / -3.25",
         format_exp!(exp!(Float(-10.0), Minus, exp!(Float(18.5), Minus, Float(17.0))), Slash, Float(-3.25)));
+}
+
+#[test]
+fn assign_stmts() {
+    assert_eq!("x = NaN;\n", format_assign!("x", Float(NAN)));
+    assert_eq!("someThing = 8.25 - OTHER;\n",
+        format_assign!("someThing", exp!(Float(8.25), Minus, var!("OTHER"))));
+    assert_eq!("thing2 = r * -51 + 3.5;\n",
+        format_assign!("thing2", exp!(exp!(var!("r"), Star, Float(-51.0)), Plus, Float(3.5))));
+    assert_eq!("_2 = (-42.5 + undefined) / 7.125;\n",
+        format_assign!("_2", exp!(exp!(Float(-42.5), Plus, Undefined), Slash, Float(7.125))));
+}
+
+#[test]
+fn bare_exp_stmts() {
+    assert_eq!("-3.5;\n", format_bare_exp!(Float(-3.5)));
+    assert_eq!("NaN;\n", format_bare_exp!(Float(NAN)));
+    assert_eq!("x - -10;\n", format_bare_exp!(exp!(var!("x"), Minus, Float(-10.0))));
+    assert_eq!("-3 * 42.5;\n", format_bare_exp!(exp!(Float(-3.0), Star, Float(42.5))));
+    assert_eq!("-10 / num - 17;\n",
+        format_bare_exp!(exp!(exp!(Float(-10.0), Slash, var!("num")), Minus, Float(17.0))));
+    assert_eq!("NUMBER * 18.5 / 17 + N_4;\n",
+        format_bare_exp!(exp!(exp!(exp!(var!("NUMBER"), Star, Float(18.5)), Slash, Float(17.0)), Plus, var!("N_4"))));
+    assert_eq!("-10 / (O_k * 17);\n",
+        format_bare_exp!(exp!(Float(-10.0), Slash, exp!(var!("O_k"), Star, Float(17.0)))));
+    assert_eq!("(-10 - (18.5 - 17)) / -3.25;\n",
+        format_bare_exp!(exp!(exp!(Float(-10.0), Minus, exp!(Float(18.5), Minus, Float(17.0))), Slash, Float(-3.25))));
+}
+
+#[test]
+fn decl_stmts() {
+    assert_eq!("var _Nu4 = 2.25;\n", format_decl!("_Nu4", Float(2.25)));
+    assert_eq!("var nU_M = x * -72;\n", format_decl!("nU_M", exp!(var!("x"), Star, Float(-72.0))));
+    assert_eq!("var NUM = -34.5 / _l4 + 8;\n",
+        format_decl!("NUM", exp!(exp!(Float(-34.5), Slash, var!("_l4")), Plus, Float(8.0))));
+    assert_eq!("var eleven = (Y + 3) * -11;\n",
+        format_decl!("eleven", exp!(exp!(var!("Y"), Plus, Float(3.0)), Star, Float(-11.0))));
 }
