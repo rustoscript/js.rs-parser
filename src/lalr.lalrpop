@@ -24,7 +24,7 @@ AddOp: BinOp = {
 
 // Parses multiplication
 MulExp: Exp = {
-    <m:MulExp> <o:MulOp> <t:Term> => Exp::BinExp(Box::new(m), o, Box::new(t)),
+    <m:MulExp> <o:MulOp> <e:PreExp> => Exp::BinExp(Box::new(m), o, Box::new(e)),
     PreExp,
 };
 
@@ -34,12 +34,14 @@ MulOp: BinOp = {
 };
 
 PreExp: Exp = {
-    "++" <PostExp> => Exp::PreInc(Box::new(<>)),
+    "++" <PreExp> => Exp::PreInc(Box::new(<>)),
+    "--" <PreExp> => Exp::PreDec(Box::new(<>)),
     PostExp,
 };
 
 PostExp: Exp = {
-    <Term> "++" => Exp::PostInc(Box::new(<>)),
+    <PostExp> "++" => Exp::PostInc(Box::new(<>)),
+    <PostExp> "--" => Exp::PostDec(Box::new(<>)),
     Term,
 };
 
