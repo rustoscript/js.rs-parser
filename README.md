@@ -1,16 +1,16 @@
 js.rs — Parser
 ==============
 
-This is the parser for js.rs, a sever-side interpreter for JavaScript being developed in Rust (WIP). It uses `lalrpop` as a parser generator.
+This is the parser for [js.rs](https://github.com/rustoscript/js.rs), a sever-side interpreter for JavaScript currently being developed in Rust. It uses `lalrpop` as a parser generator.
 
-Currently, only basic arithmetic expressions (addition, multiplication, and subtraction, and parenthetical grouping) for ints and floats are supported.
+Currently, it supports arithmetic expressions, variable declaration and assignment, and both pre- and post-incrementation/decrementation with `++` and `--`. The only values it currently can parse are numbers and `undefined`.
 
 AST
 ---
 
-The type definitions for the AST can be found in `src/ast.rs`. Since arithmetic instructions are the only things implemented right now, the only typs are `Exp` and `BinOp`.
+The type definitions for the AST can be found in `src/ast.rs`. These types currently include expression (`Exp`), binary operators (`BinOp`), and statements (`Stmt`);
 
 Parsing
 -------
 
-Currently the only parsing function generated is `parse_Exp`, which takes a `&str` and returns an `Exp` (wrapped in a `Result`).
+The two generated parser functions are `parse_Stmt` and `parse_Exp`, each of which both returns `Result` wrapping its respective AST value.
