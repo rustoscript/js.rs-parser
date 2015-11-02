@@ -51,6 +51,8 @@ Term: Exp = {
     Var => Exp::Var(<>),
     "undefined" => Exp::Undefined,
     "(" <Exp> ")",
+    "-" <Term> => Exp::Neg(Box::new(<>)),
+    "+" <Term> => Exp::Pos(Box::new(<>)),
 };
 
 Float: f64 = {

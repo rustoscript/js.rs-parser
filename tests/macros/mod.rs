@@ -18,6 +18,14 @@ macro_rules! pre_inc {
     ($e:expr) => { PreInc(Box::new($e)) }
 }
 
+macro_rules! neg_var {
+    ($e:expr) => { Neg(Box::new(var!($e))) }
+}
+
+macro_rules! pos_var {
+    ($e:expr) => { Pos(Box::new(var!($e))) }
+}
+
 macro_rules! assign {
     ($v:expr, $e:expr) => { Assign(String::from($v), $e) }
 }

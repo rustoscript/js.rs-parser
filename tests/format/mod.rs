@@ -30,28 +30,41 @@ fn constants() {
 }
 
 #[test]
+fn vars() {
+    assert_eq!("x", format!("{}", var!("x")));
+    assert_eq!("X", format!("{}", var!("X")));
+    assert_eq!("_x", format!("{}", var!("_x")));
+    assert_eq!("_x2", format!("{}", var!("_x2")));
+    assert_eq!("xX_", format!("{}", var!("xX_")));
+    assert_eq!("X_x", format!("{}", var!("X_x")));
+    assert_eq!("-x", format!("{}", neg_var!("x")));
+    assert_eq!("+_2", format!("{}", pos_var!("_2")));
+}
+
+#[test]
 fn single_binop_exprs() {
-    assert_eq!("-14 * 7", format_exp!(Float(-14.0), Star, Float(7.0)));
-    assert_eq!("8 - -10", format_exp!(Float(8.0), Minus, Float(-10.0)));
+    assert_eq!("-14 * -num", format_exp!(Float(-14.0), Star, neg_var!("num")));
+    assert_eq!("+z++ - -10", format_exp!(post_inc!(pos_var!("z")), Minus, Float(-10.0)));
     assert_eq!("12.25 + 72", format_exp!(Float(12.25), Plus, Float(72.0)));
     assert_eq!("-3 * 42.5", format_exp!(Float(-3.0), Star, Float(42.5)));
-    assert_eq!("22 / x", format_exp!(Float(22.0), Slash, var!("x")))
+    assert_eq!("22 / x", format_exp!(Float(22.0), Slash, var!("x")));
+    assert_eq!("3 - -----y", format_exp!(Float(3.0), Minus, pre_dec!(pre_dec!(neg_var!("y")))));
 }
 
 #[test]
 fn multi_binop_exprs_no_grouping() {
     assert_eq!("x + 18.5 - 17",
         format_exp!(exp!(var!("x"), Plus, Float(18.5)), Minus, Float(17.0)));
-    assert_eq!("-10 / num - 17",
-        format_exp!(exp!(Float(-10.0), Slash, var!("num")), Minus, Float(17.0)));
-    assert_eq!("-10 * 18.5 + some_num",
-        format_exp!(exp!(Float(-10.0), Star, Float(18.5)), Plus, var!("some_num")));
+    assert_eq!("-10 / +num - 17",
+        format_exp!(exp!(Float(-10.0), Slash, pos_var!("num")), Minus, Float(17.0)));
+    assert_eq!("-10 * 18.5 + -some_num",
+        format_exp!(exp!(Float(-10.0), Star, Float(18.5)), Plus, neg_var!("some_num")));
     assert_eq!("anotherNumber - _x / 17",
         format_exp!(var!("anotherNumber"), Minus, exp!(var!("_x"), Slash, Float(17.0))));
     assert_eq!("_ - 18.5 + x2 * -3.25",
         format_exp!(exp!(var!("_"), Minus, Float(18.5)), Plus, exp!(var!("x2"), Star, Float(-3.25))));
-    assert_eq!("NUMBER * 18.5 / 17 + N_4",
-        format_exp!(exp!(exp!(var!("NUMBER"), Star, Float(18.5)), Slash, Float(17.0)), Plus, var!("N_4")));
+    assert_eq!("NUMBER * 18.5 / 17 + ---N_4",
+        format_exp!(exp!(exp!(var!("NUMBER"), Star, Float(18.5)), Slash, Float(17.0)), Plus, pre_dec!(neg_var!("N_4"))));
 }
 
 #[test]

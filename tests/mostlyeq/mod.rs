@@ -19,12 +19,14 @@ impl MostlyEq for Exp {
             (&BinExp(ref a1, ref o1, ref b1), &BinExp(ref a2, ref o2, ref b2)) =>
                 (&*a1).mostly_eq(a2) && o1 == o2 && (&*b1).mostly_eq(&*b2),
             (&Float(f1), &Float(f2)) => f1.approx_eq(&f2) || (f1.is_nan() && f2.is_nan()),
-            (&Var(ref v1), &Var(ref v2)) => v1 == v2,
-            (&Undefined, &Undefined) => true,
+            (&Neg(ref e1), &Neg(ref e2)) |
+            (&Pos(ref e1), &Pos(ref e2)) |
             (&PostDec(ref e1), &PostDec(ref e2)) |
             (&PostInc(ref e1), &PostInc(ref e2)) |
             (&PreDec(ref e1), &PreDec(ref e2)) |
             (&PreInc(ref e1), &PreInc(ref e2)) => e1.mostly_eq(e2),
+            (&Var(ref v1), &Var(ref v2)) => v1 == v2,
+            (&Undefined, &Undefined) => true,
             _ => false
         }
     }
