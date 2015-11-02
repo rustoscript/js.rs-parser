@@ -6,7 +6,12 @@ grammar;
 
 // Statement nonterminal
 pub Stmt: Stmt = {
-    <Var> "=" <Exp>  ";" => Stmt::Assign(<>),
+    SingleStmt,
+    <s1:SingleStmt> <s2:Stmt> => Stmt::Seq(Box::new(s1), Box::new(s2)),
+};
+
+SingleStmt: Stmt = {
+    <Var> "=" <Exp> ";" => Stmt::Assign(<>),
     "var" <Var> "=" <Exp> ";" => Stmt::Decl(<>),
     <Exp> ";" => Stmt::BareExp(<>),
 };
