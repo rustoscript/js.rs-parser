@@ -124,6 +124,7 @@ pub enum Stmt {
     Assign(String, Exp),
     BareExp(Exp),
     Decl(String, Exp),
+    Seq(Box<Stmt>, Box<Stmt>),
 }
 
 impl Display for Stmt {
@@ -132,6 +133,7 @@ impl Display for Stmt {
             Stmt::Assign(ref v, ref exp) => write!(fmt, "{} = {};\n", v, exp),
             Stmt::Decl(ref v, ref exp) => write!(fmt, "var {} = {};\n", v, exp),
             Stmt::BareExp(ref exp) => write!(fmt, "{};\n", exp),
+            Stmt::Seq(ref s1, ref s2) => write!(fmt, "{}{}", s1, s2),
         }
     }
 }
