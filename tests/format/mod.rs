@@ -8,7 +8,7 @@ macro_rules! format_exp {
 }
 
 macro_rules! format_assign {
-    ($s:expr, $e:expr) => { &format!("{}", Assign(String::from($s), $e)) }
+    ($s:expr, $e:expr) => { &format!("{}", assign!($s, $e)) }
 }
 
 macro_rules! format_bare_exp {
@@ -16,7 +16,7 @@ macro_rules! format_bare_exp {
 }
 
 macro_rules! format_decl {
-    ($s:expr, $e:expr) => { &format!("{}", Decl(String::from($s), $e)) }
+    ($s:expr, $e:expr) => { &format!("{}", decl!($s, $e)) }
 }
 
 #[test]
