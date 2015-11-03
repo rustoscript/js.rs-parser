@@ -29,8 +29,8 @@ AddOp: BinOp = {
 
 // Parses multiplication
 MulExp: Exp = {
-    <m:MulExp> <o:MulOp> <t:Term> => Exp::BinExp(Box::new(m), o, Box::new(t)),
-    Term,
+    <m:MulExp> <o:MulOp> <e:PreExp> => Exp::BinExp(Box::new(m), o, Box::new(e)),
+    PreExp,
 };
 
 MulOp: BinOp = {
@@ -38,12 +38,26 @@ MulOp: BinOp = {
     "/" => BinOp::Slash,
 };
 
-// Parses numbers and parenthetical expressions
+PreExp: Exp = {
+    "++" <PreExp> => Exp::PreInc(Box::new(<>)),
+    "--" <PreExp> => Exp::PreDec(Box::new(<>)),
+    PostExp,
+};
+
+PostExp: Exp = {
+    <PostExp> "++" => Exp::PostInc(Box::new(<>)),
+    <PostExp> "--" => Exp::PostDec(Box::new(<>)),
+    Term,
+};
+
+// Parses numbers and parenthetical expressions, and variables
 Term: Exp = {
     Float => Exp::Float(<>),
     Var => Exp::Var(<>),
     "undefined" => Exp::Undefined,
     "(" <Exp> ")",
+    "-" <Term> => Exp::Neg(Box::new(<>)),
+    "+" <Term> => Exp::Pos(Box::new(<>)),
 };
 
 Float: f64 = {

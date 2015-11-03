@@ -10,7 +10,9 @@ pub enum BinOp {
 
 #[derive(PartialEq, Eq, PartialOrd, Ord)]
 pub enum Precedence {
-    Const = 100,
+    Const = 110,
+    Sign = 100,
+    Inc = 90,
     Mult = 60,
     Add = 50,
 }
@@ -46,6 +48,12 @@ impl Display for BinOp {
 pub enum Exp {
     BinExp(Box<Exp>, BinOp, Box<Exp>),
     Float(f64),
+    Neg(Box<Exp>),
+    Pos(Box<Exp>),
+    PostDec(Box<Exp>),
+    PostInc(Box<Exp>),
+    PreDec(Box<Exp>),
+    PreInc(Box<Exp>),
     Undefined,
     Var(String),
 }
@@ -54,7 +62,19 @@ impl Exp {
     pub fn precedence(&self) -> Precedence {
         match *self {
             Exp::BinExp(_, ref o, _) => o.precedence(),
-            Exp::Undefined | Exp::Float(_) | Exp::Var(_) => Precedence::Const,
+            Exp::Float(_) | Exp::Undefined | Exp::Var(_) => Precedence::Const,
+            Exp::Neg(_) | Exp::Pos(_) => Precedence::Sign,
+            Exp::PostDec(_) | Exp::PostInc(_) | Exp::PreDec(_) | Exp::PreInc(_) => Precedence::Inc,
+        }
+    }
+}
+
+macro_rules! group {
+    ($e:expr, $p:expr) => {
+        if $e.precedence() < $p {
+            format!("({})", $e)
+        } else {
+            format!("{}", $e)
         }
     }
 }
@@ -87,8 +107,14 @@ impl Display for Exp {
                 write!(fmt, "{} {} {}", left, o, right)
             }
             Exp::Float(f)   => write!(fmt, "{}", f),
-            Exp::Var(ref v) => write!(fmt, "{}", v),
+            Exp::Neg(ref e) => write!(fmt, "-{}", group!(e, Precedence::Sign)),
+            Exp::Pos(ref e) => write!(fmt, "+{}", group!(e, Precedence::Sign)),
+            Exp::PostDec(ref e) => write!(fmt, "{}--", group!(e, Precedence::Inc)),
+            Exp::PostInc(ref e) => write!(fmt, "{}++", group!(e, Precedence::Inc)),
+            Exp::PreDec(ref e) => write!(fmt, "--{}", group!(e, Precedence::Inc)),
+            Exp::PreInc(ref e) => write!(fmt, "++{}", group!(e, Precedence::Inc)),
             Exp::Undefined => write!(fmt, "undefined"),
+            Exp::Var(ref v) => write!(fmt, "{}", v),
         }
     }
 }
