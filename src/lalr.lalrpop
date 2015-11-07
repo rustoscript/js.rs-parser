@@ -18,7 +18,22 @@ SingleStmt: Stmt = {
 
 // Expression nonterminal
 pub Exp: Exp = {
-    <e:Exp> <o:AddOp> <m:MulExp> => Exp::BinExp(Box::new(e), o, Box::new(m)),
+    OrExp,
+};
+
+OrExp = {
+    <o:OrExp> "||" <a:AndExp> => Exp::BinExp(Box::new(o), BinOp::Or, Box::new(a)),
+    AndExp,
+};
+
+AndExp = {
+    <and:AndExp> "&&" <add:AddExp> => Exp::BinExp(Box::new(and), BinOp::And, Box::new(add)),
+    AddExp,
+};
+
+// Parses addition and substraction
+AddExp: Exp = {
+    <a:AddExp> <o:AddOp> <m:MulExp> => Exp::BinExp(Box::new(a), o, Box::new(m)),
     MulExp,
 };
 
@@ -27,7 +42,7 @@ AddOp: BinOp = {
     "-" => BinOp::Minus,
 };
 
-// Parses multiplication
+// Parses multiplication and division
 MulExp: Exp = {
     <m:MulExp> <o:MulOp> <e:PreExp> => Exp::BinExp(Box::new(m), o, Box::new(e)),
     PreExp,
@@ -52,12 +67,18 @@ PostExp: Exp = {
 
 // Parses numbers and parenthetical expressions, and variables
 Term: Exp = {
+    Bool => Exp::Bool(<>),
     Float => Exp::Float(<>),
     Var => Exp::Var(<>),
     "undefined" => Exp::Undefined,
     "(" <Exp> ")",
     "-" <Term> => Exp::Neg(Box::new(<>)),
     "+" <Term> => Exp::Pos(Box::new(<>)),
+};
+
+Bool: bool = {
+    "true" => true,
+    "false" => false,
 };
 
 Float: f64 = {

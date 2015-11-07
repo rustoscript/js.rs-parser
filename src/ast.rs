@@ -2,7 +2,9 @@ use std::fmt::{Display, Error, Formatter};
 
 #[derive(Debug, PartialEq, Eq)]
 pub enum BinOp {
+    And,
     Minus,
+    Or,
     Plus,
     Slash,
     Star,
@@ -15,11 +17,15 @@ pub enum Precedence {
     Inc = 90,
     Mult = 60,
     Add = 50,
+    And = 40,
+    Or = 30,
 }
 
 impl BinOp {
     pub fn precedence(&self) -> Precedence {
         match *self {
+            BinOp::And => Precedence::And,
+            BinOp::Or => Precedence::Or,
             BinOp::Minus | BinOp::Plus => Precedence::Add,
             BinOp::Slash | BinOp::Star => Precedence::Mult,
         }
@@ -36,7 +42,9 @@ impl BinOp {
 impl Display for BinOp {
     fn fmt(&self, fmt: &mut Formatter) -> Result<(), Error> {
         match *self {
+            BinOp::And => write!(fmt, "&&"),
             BinOp::Minus => write!(fmt, "-"),
+            BinOp::Or => write!(fmt, "||"),
             BinOp::Plus => write!(fmt, "+"),
             BinOp::Slash => write!(fmt, "/"),
             BinOp::Star => write!(fmt, "*"),
@@ -47,6 +55,7 @@ impl Display for BinOp {
 #[derive(Debug)]
 pub enum Exp {
     BinExp(Box<Exp>, BinOp, Box<Exp>),
+    Bool(bool),
     Float(f64),
     Neg(Box<Exp>),
     Pos(Box<Exp>),
@@ -62,7 +71,7 @@ impl Exp {
     pub fn precedence(&self) -> Precedence {
         match *self {
             Exp::BinExp(_, ref o, _) => o.precedence(),
-            Exp::Float(_) | Exp::Undefined | Exp::Var(_) => Precedence::Const,
+            Exp::Bool(_) | Exp::Float(_) | Exp::Undefined | Exp::Var(_) => Precedence::Const,
             Exp::Neg(_) | Exp::Pos(_) => Precedence::Sign,
             Exp::PostDec(_) | Exp::PostInc(_) | Exp::PreDec(_) | Exp::PreInc(_) => Precedence::Inc,
         }
@@ -106,7 +115,8 @@ impl Display for Exp {
 
                 write!(fmt, "{} {} {}", left, o, right)
             }
-            Exp::Float(f)   => write!(fmt, "{}", f),
+            Exp::Bool(b) => write!(fmt, "{}", b),
+            Exp::Float(f) => write!(fmt, "{}", f),
             Exp::Neg(ref e) => write!(fmt, "-{}", group!(e, Precedence::Sign)),
             Exp::Pos(ref e) => write!(fmt, "+{}", group!(e, Precedence::Sign)),
             Exp::PostDec(ref e) => write!(fmt, "{}--", group!(e, Precedence::Inc)),
