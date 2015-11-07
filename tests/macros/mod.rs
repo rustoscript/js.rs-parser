@@ -34,6 +34,10 @@ macro_rules! decl {
     ($v:expr, $e:expr) => { Decl(String::from($v), $e) }
 }
 
+macro_rules! seq {
+    ($s1:expr, $s2:expr) => { Seq(Box::new($s1), Box::new($s2)) }
+}
+
 macro_rules! var {
     ($s:expr) => { Var(String::from($s)) }
 }
