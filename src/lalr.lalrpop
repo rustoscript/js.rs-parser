@@ -14,6 +14,24 @@ SingleStmt: Stmt = {
     <Var> "=" <Exp> ";" => Stmt::Assign(<>),
     "var" <Var> "=" <Exp> ";" => Stmt::Decl(<>),
     <Exp> ";" => Stmt::BareExp(<>),
+    "while" <Clause> <Block> => Stmt::While(<>),
+    "if" <Clause> <Block> <ElseIfBlock*> <ElseBlock?> => Stmt::If(<>),
+};
+
+ElseIfBlock: (Exp, Box<Stmt>) = {
+    "else" "if" <Clause> <Block>,
+};
+
+ElseBlock: Box<Stmt> = {
+    "else" <Block>,
+};
+
+Block: Box<Stmt> = {
+    "{" <s:Stmt> "}" => Box::new(s),
+};
+
+Clause: Exp = {
+    "(" <Exp> ")",
 };
 
 // Expression nonterminal
