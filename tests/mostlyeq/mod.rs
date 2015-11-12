@@ -1,6 +1,6 @@
-use jsrs_parser::ast::{Exp, Stmt};
-use jsrs_parser::ast::Exp::*;
-use jsrs_parser::ast::Stmt::*;
+use jsrs_common::ast::{Exp, Stmt};
+use jsrs_common::ast::Exp::*;
+use jsrs_common::ast::Stmt::*;
 use nalgebra::ApproxEq;
 
 macro_rules! assert_mostly_eq {

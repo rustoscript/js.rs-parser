@@ -1,4 +1,4 @@
-use jsrs_parser::ast::BinOp::*;
+use jsrs_common::ast::BinOp::*;
 
 #[test]
 fn star() {

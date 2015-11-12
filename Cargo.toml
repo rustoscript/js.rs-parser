@@ -15,3 +15,7 @@ lalrpop-util = "0.8.0"
 
 [dev-dependencies]
 nalgebra = "0.3.1"
+
+[dependencies.jsrs-common]
+git = "https://github.com/rustoscript/js.rs-common"
+rev = "06c95f5"

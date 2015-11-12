@@ -1,6 +1,6 @@
-use jsrs_parser::ast::BinOp::*;
-use jsrs_parser::ast::Exp::*;
-use jsrs_parser::ast::Stmt::*;
+use jsrs_common::ast::BinOp::*;
+use jsrs_common::ast::Exp::*;
+use jsrs_common::ast::Stmt::*;
 use std::f64::NAN;
 
 macro_rules! format_exp {

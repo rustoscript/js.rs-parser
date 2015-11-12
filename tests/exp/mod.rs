@@ -1,7 +1,7 @@
 use ::mostlyeq::MostlyEq;
 
-use jsrs_parser::ast::BinOp::*;
-use jsrs_parser::ast::Exp::*;
+use jsrs_common::ast::BinOp::*;
+use jsrs_common::ast::Exp::*;
 use jsrs_parser::lalr::parse_Exp;
 
 use std::f64::NAN;
