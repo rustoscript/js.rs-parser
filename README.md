@@ -1,4 +1,4 @@
-js.rs — Parser
+js.rs — Parser [![Build Status](https://travis-ci.org/rustoscript/js.rs-parser.svg)](https://travis-ci.org/rustoscript/js.rs-parser)
 ==============
 
 This is the parser for [js.rs](https://github.com/rustoscript/js.rs), a sever-side interpreter for JavaScript currently being developed in Rust. It makes use of [lalrpop](https://github.com/nikomatsakis/lalrpop), a parser generator.

@@ -1,5 +1,8 @@
 [package]
-authors = ["Saghm Rossi <saghmrossi@gmail.com>"]
+authors = [
+    "Saghm Rossi <saghmrossi@gmail.com>",
+    "Terry Sun <terrynsun@gmail.com>"
+]
 build = "build.rs"
 name = "jsrs-parser"
 version = "0.1.0"
