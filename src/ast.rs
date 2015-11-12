@@ -134,16 +134,54 @@ pub enum Stmt {
     Assign(String, Exp),
     BareExp(Exp),
     Decl(String, Exp),
+    If(Exp, Box<Stmt>, Vec<(Exp, Box<Stmt>)>, Option<Box<Stmt>>),
     Seq(Box<Stmt>, Box<Stmt>),
+    While(Exp, Box<Stmt>),
+}
+
+impl Stmt {
+    fn fmt_helper(&self, mut fmt: &mut Formatter, indent_level: i32) -> Result<(), Error> {
+        macro_rules! indented_stmt {
+            ($stmt:expr) => {
+                try!($stmt.fmt_helper(&mut fmt, indent_level + 2))
+            }
+        }
+
+        let indent : String = (0..indent_level).map(|_| " ").collect();
+
+        match *self {
+            Stmt::Assign(ref v, ref exp) => write!(fmt, "{}{} = {};\n", indent, v, exp),
+            Stmt::BareExp(ref exp) => write!(fmt, "{}{};\n", indent, exp),
+            Stmt::Decl(ref v, ref exp) => write!(fmt, "{}var {} = {};\n", indent, v, exp),
+            Stmt::If(ref e, ref s, ref vec, ref els) => {
+                try!(write!(fmt, "{}if ({}) {{\n", indent, e));
+                indented_stmt!(s);
+
+                for &(ref exp, ref stmt) in vec {
+                    try!(write!(fmt, "{}else if ({}) {{\n", indent, exp));
+                    indented_stmt!(stmt);
+                    try!(write!(fmt, "{}}}\n", indent));
+                }
+
+                if let &Some(ref stmt) = els {
+                    try!(write!(fmt, "{} else {{\n", indent));
+                    indented_stmt!(stmt);
+                }
+
+                Ok(())
+            }
+            Stmt::Seq(ref s1, ref s2) => write!(fmt, "{}{}{}{}", indent, s1, indent, s2),
+            Stmt::While(ref exp, ref stmt) => {
+                try!(write!(fmt, "{}while ({}) {{\n", indent, exp));
+                try!(stmt.fmt_helper(&mut fmt, indent_level + 2));
+                write!(fmt, "{}}}\n", indent)
+            }
+        }
+    }
 }
 
 impl Display for Stmt {
-    fn fmt(&self, fmt: &mut Formatter) -> Result<(), Error> {
-        match *self {
-            Stmt::Assign(ref v, ref exp) => write!(fmt, "{} = {};\n", v, exp),
-            Stmt::Decl(ref v, ref exp) => write!(fmt, "var {} = {};\n", v, exp),
-            Stmt::BareExp(ref exp) => write!(fmt, "{};\n", exp),
-            Stmt::Seq(ref s1, ref s2) => write!(fmt, "{}{}", s1, s2),
-        }
+    fn fmt(&self, mut fmt: &mut Formatter) -> Result<(), Error> {
+        self.fmt_helper(&mut fmt, 0)
     }
 }
