@@ -19,6 +19,10 @@ macro_rules! format_decl {
     ($s:expr, $e:expr) => { &format!("{}", decl!($s, $e)) }
 }
 
+macro_rules! format_seq {
+    ($s1:expr, $s2:expr) => { &format!("{}", seq!($s1, $s2)) }
+}
+
 #[test]
 fn constants() {
     // Floating point values specifically chosen so fractional part can be perfectly represented
@@ -120,4 +124,15 @@ fn decl_stmts() {
         format_decl!("NUM", exp!(exp!(Float(-34.5), Slash, var!("_l4")), Plus, Float(8.0))));
     assert_eq!("var eleven = (Y + 3) * -11;\n",
         format_decl!("eleven", exp!(exp!(var!("Y"), Plus, Float(3.0)), Star, Float(-11.0))));
+}
+
+#[test]
+fn seq_stmts() {
+    assert_eq!("someThing = 8.25 - OTHER;\n-3 * 42.5;\n",
+        format_seq!(assign!("someThing", exp!(Float(8.25), Minus, var!("OTHER"))),
+                    BareExp(exp!(Float(-3.0), Star, Float(42.5)))));
+    assert_eq!("-10 / num - 17;\nvar NUM = -34.5 / _l4 + 8;\nthing2 = r * -51 + 3.5;\n", format_seq!(
+        BareExp(exp!(exp!(Float(-10.0), Slash, var!("num")), Minus, Float(17.0))), seq!(
+            decl!("NUM", exp!(exp!(Float(-34.5), Slash, var!("_l4")), Plus, Float(8.0))),
+            assign!("thing2", exp!(exp!(var!("r"), Star, Float(-51.0)), Plus, Float(3.5))))));
 }
