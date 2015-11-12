@@ -8,10 +8,10 @@ name = "jsrs-parser"
 version = "0.1.0"
 
 [build-dependencies]
-lalrpop = "0.7.0"
+lalrpop = "0.8.0"
 
 [dependencies]
-lalrpop-util = "0.7.0"
+lalrpop-util = "0.8.0"
 
 [dev-dependencies]
 nalgebra = "0.3.1"
