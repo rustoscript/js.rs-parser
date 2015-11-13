@@ -39,26 +39,16 @@ impl MostlyEq for Stmt {
             (&Assign(ref v1, ref e1), &Assign(ref v2, ref e2)) |
             (&Decl(ref v1, ref e1), &Decl(ref v2, ref e2)) => v1 == v2 && e1.mostly_eq(e2),
             (&BareExp(ref e1), &BareExp(ref e2)) => e1.mostly_eq(e2),
-            (&If(ref e1, ref s1, ref vec1, ref opt1), &If(ref e2, ref s2, ref vec2, ref opt2)) => {
-                if !e1.mostly_eq(e2) || !s1.mostly_eq(s2) || vec1.len() != vec2.len() {
+            (&If(ref e1, ref s1, ref opt1), &If(ref e2, ref s2, ref opt2)) => {
+                if !e1.mostly_eq(e2) || !s1.mostly_eq(s2) {
                     return false;
                 }
 
                 match (opt1, opt2) {
-                    (&Some(ref s1), &Some(ref s2)) => if !s1.mostly_eq(s2) {
-                        return false
-                    },
-                    (&None, &None) => (),
+                    (&Some(ref s1), &Some(ref s2)) => s1.mostly_eq(s2),
+                    (&None, &None) => true,
                     _ => return false
-                };
-
-                for (&(ref ve1, ref vs1), &(ref ve2, ref vs2)) in vec1.iter().zip(vec2.iter()) {
-                    if !ve1.mostly_eq(&ve2) || !vs1.mostly_eq(&vs2) {
-                        return false;
-                    }
                 }
-
-                true
             }
             _ => false
         }

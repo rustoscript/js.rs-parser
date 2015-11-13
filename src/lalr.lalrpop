@@ -15,7 +15,18 @@ SingleStmt: Stmt = {
     "var" <Var> "=" <Exp> ";" => Stmt::Decl(<>),
     <Exp> ";" => Stmt::BareExp(<>),
     "while" <Clause> <Block> => Stmt::While(<>),
-    "if" <Clause> <Block> <ElseIfBlock*> <ElseBlock?> => Stmt::If(<>),
+    "if" <c:Clause> <b:Block> <vec:ElseIfBlock*> <els:ElseBlock?> => match vec.clone().pop() {
+        Some((e, s)) => {
+            let mut elsif = Box::new(Stmt::If(e, s, els));
+
+            for (e2, s2) in vec.into_iter().rev() {
+                elsif = Box::new(Stmt::If(e2, s2, Some(elsif)));
+            }
+
+            Stmt::If(c, b, Some(elsif))
+        }
+        None => Stmt::If(c, b, els)
+    }
 };
 
 ElseIfBlock: (Exp, Box<Stmt>) = {
