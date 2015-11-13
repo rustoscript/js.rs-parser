@@ -7,6 +7,4 @@ extern crate nalgebra;
 #[macro_use] mod mostlyeq;
 
 mod exp;
-mod format;
-mod precedence;
 mod stmt;
