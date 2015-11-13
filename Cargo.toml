@@ -1,8 +1,5 @@
 [package]
-authors = [
-    "Saghm Rossi <saghmrossi@gmail.com>",
-    "Terry Sun <terrynsun@gmail.com>"
-]
+authors = ["Saghm Rossi <saghmrossi@gmail.com>", "Terry Sun <terrynsun@gmail.com>"]
 build = "build.rs"
 name = "jsrs-parser"
 version = "0.1.0"
@@ -12,10 +9,11 @@ lalrpop = "0.8.0"
 
 [dependencies]
 lalrpop-util = "0.8.0"
-
-[dev-dependencies]
-nalgebra = "0.3.1"
+rustyline = "0.1.0"
 
 [dependencies.jsrs-common]
 git = "https://github.com/rustoscript/js.rs-common"
 rev = "06c95f5"
+
+[dev-dependencies]
+nalgebra = "0.3.1"
