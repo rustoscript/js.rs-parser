@@ -4,9 +4,29 @@ use jsrs_common::ast::{BinOp, Exp, Stmt};
 
 grammar;
 
-// Statement nonterminal
+// Macros -----------------------------------------------------------------------------------------
+
+ParenList<Val>: Vec<Val> = {
+    "(" ")" => Vec::new(),
+    "(" <p:ParenVal<Val>*> <v:Val> ")" => {
+        let mut vec = p;
+        vec.push(v);
+        vec
+    }
+};
+
+ParenVal<Val> = <Val> ",";
+
+BinExp<Op, NextLevel>: Exp = {
+    <b:BinExp<Op, NextLevel>> <o:Op> <n:NextLevel> => Exp::BinExp(Box::new(b), o, Box::new(n)),
+    NextLevel,
+};
+
+// Statements -------------------------------------------------------------------------------------
+
 pub Stmt: Stmt = {
     SingleStmt,
+    Defun => Stmt::BareExp(<>),
     <s1:SingleStmt> <s2:Stmt> => Stmt::Seq(Box::new(s1), Box::new(s2)),
 };
 
@@ -14,68 +34,58 @@ SingleStmt: Stmt = {
     <Var> "=" <Exp> ";" => Stmt::Assign(<>),
     "var" <Var> "=" <Exp> ";" => Stmt::Decl(<>),
     <Exp> ";" => Stmt::BareExp(<>),
+    "return" <Exp> ";" => Stmt::Ret(<>),
     "while" <Clause> <Block> => Stmt::While(<>),
-    "if" <c:Clause> <b:Block> <vec:ElseIfBlock*> <els:ElseBlock?> => match vec.clone().pop() {
-        Some((e, s)) => {
-            let mut elsif = Box::new(Stmt::If(e, s, els));
+    "if" <c:Clause> <b:Block> <vec:ElseIfBlock*> <els:ElseBlock?> => {
+        let mut v = vec;
 
-            for (e2, s2) in vec.into_iter().rev() {
-                elsif = Box::new(Stmt::If(e2, s2, Some(elsif)));
+        match v.pop() {
+            Some((e, s)) => {
+                let mut elsif = Box::new(Stmt::If(e, s, els));
+
+                for (e2, s2) in v.into_iter().rev() {
+                    elsif = Box::new(Stmt::If(e2, s2, Some(elsif)));
+                }
+
+                Stmt::If(c, b, Some(elsif))
             }
-
-            Stmt::If(c, b, Some(elsif))
+            None => Stmt::If(c, b, els)
         }
-        None => Stmt::If(c, b, els)
     }
 };
 
-ElseIfBlock: (Exp, Box<Stmt>) = {
-    "else" "if" <Clause> <Block>,
+ElseIfBlock = "else" "if" <Clause> <Block>;
+ElseBlock = "else" <Block>;
+
+Block: Box<Stmt> = "{" <s:Stmt> "}" => Box::new(s);
+Clause = "(" <Exp> ")";
+
+// Expressions ------------------------------------------------------------------------------------
+
+pub Exp = {
+    NonDefun,
+    Defun,
 };
 
-ElseBlock: Box<Stmt> = {
-    "else" <Block>,
-};
+Defun: Exp = "function" <Var?> <Params> <Block> => Exp::Defun(<>);
+Params = ParenList<Var>;
 
-Block: Box<Stmt> = {
-    "{" <s:Stmt> "}" => Box::new(s),
-};
+NonDefun = OrExp;
 
-Clause: Exp = {
-    "(" <Exp> ")",
-};
+OrExp = BinExp<OrOp, AndExp>;
+OrOp: BinOp = "||" => BinOp::Or;
 
-// Expression nonterminal
-pub Exp: Exp = {
-    OrExp,
-};
+AndExp = BinExp<AndOp, AddExp>;
+AndOp: BinOp = "&&" => BinOp::And;
 
-OrExp = {
-    <o:OrExp> "||" <a:AndExp> => Exp::BinExp(Box::new(o), BinOp::Or, Box::new(a)),
-    AndExp,
-};
-
-AndExp = {
-    <and:AndExp> "&&" <add:AddExp> => Exp::BinExp(Box::new(and), BinOp::And, Box::new(add)),
-    AddExp,
-};
-
-// Parses addition and substraction
-AddExp: Exp = {
-    <a:AddExp> <o:AddOp> <m:MulExp> => Exp::BinExp(Box::new(a), o, Box::new(m)),
-    MulExp,
-};
+AddExp = BinExp<AddOp, MulExp>;
 
 AddOp: BinOp = {
     "+" => BinOp::Plus,
     "-" => BinOp::Minus,
 };
 
-// Parses multiplication and division
-MulExp: Exp = {
-    <m:MulExp> <o:MulOp> <e:PreExp> => Exp::BinExp(Box::new(m), o, Box::new(e)),
-    PreExp,
-};
+MulExp = BinExp<MulOp, PreExp>;
 
 MulOp: BinOp = {
     "*" => BinOp::Star,
@@ -91,19 +101,34 @@ PreExp: Exp = {
 PostExp: Exp = {
     <PostExp> "++" => Exp::PostInc(Box::new(<>)),
     <PostExp> "--" => Exp::PostDec(Box::new(<>)),
+    SignedExp,
+};
+
+SignedExp: Exp = {
+    "-" <Term> => Exp::Neg(Box::new(<>)),
+    "+" <Term> => Exp::Pos(Box::new(<>)),
+    Call,
+};
+
+Call: Exp = {
+    <c:Call> <a:Args> => Exp::Call(Box::new(c), a),
     Term,
 };
 
-// Parses numbers and parenthetical expressions, and variables
 Term: Exp = {
     Bool => Exp::Bool(<>),
     Float => Exp::Float(<>),
     Var => Exp::Var(<>),
     "undefined" => Exp::Undefined,
     "(" <Exp> ")",
-    "-" <Term> => Exp::Neg(Box::new(<>)),
-    "+" <Term> => Exp::Pos(Box::new(<>)),
 };
+
+Args = ParenList<BoxExp>;
+BoxExp: Box<Exp> = Exp => Box::new(<>);
+
+Var: String = r"[A-Za-z_][0-9A-Za-z_]*" => String::from(<>);
+
+// Literals ---------------------------------------------------------------------------------------
 
 Bool: bool = {
     "true" => true,
@@ -116,8 +141,4 @@ Float: f64 = {
     // '.2' or '2.0'
     r"-?[0-9]*\.[0-9]+" => f64::from_str(<>).unwrap(),
     "NaN" => NAN
-};
-
-Var: String = {
-    r"[A-Za-z_][0-9A-Za-z_]*" => String::from(<>)
 };
