@@ -26,7 +26,6 @@ BinExp<Op, NextLevel>: Exp = {
 
 pub Stmt: Stmt = {
     SingleStmt,
-    Defun => Stmt::BareExp(<>),
     <s1:SingleStmt> <s2:Stmt> => Stmt::Seq(Box::new(s1), Box::new(s2)),
 };
 
@@ -51,7 +50,8 @@ SingleStmt: Stmt = {
             }
             None => Stmt::If(c, b, els)
         }
-    }
+    },
+    Defun => Stmt::BareExp(<>),
 };
 
 ElseIfBlock = "else" "if" <Clause> <Block>;
