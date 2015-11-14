@@ -75,8 +75,19 @@ NonDefun = OrExp;
 OrExp = BinExp<OrOp, AndExp>;
 OrOp: BinOp = "||" => BinOp::Or;
 
-AndExp = BinExp<AndOp, AddExp>;
+AndExp = BinExp<AndOp, EqExp>;
 AndOp: BinOp = "&&" => BinOp::And;
+
+EqExp = BinExp<EqOp, AddExp>;
+
+EqOp: BinOp = {
+    "==" => BinOp::Eql,
+    "!=" => BinOp::Neq,
+    ">" => BinOp::Gt,
+    ">=" => BinOp::Ge,
+    "<" => BinOp::Lt,
+    "<=" => BinOp::Le,
+};
 
 AddExp = BinExp<AddOp, MulExp>;
 
