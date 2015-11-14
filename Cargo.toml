@@ -13,7 +13,7 @@ rustyline = "0.1.0"
 
 [dependencies.jsrs-common]
 git = "https://github.com/rustoscript/js.rs-common"
-rev = "d55cad6"
+rev = "e79093e"
 
 [dev-dependencies]
 nalgebra = "0.3.1"
