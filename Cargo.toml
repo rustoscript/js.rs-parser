@@ -2,6 +2,7 @@
 authors = ["Saghm Rossi <saghmrossi@gmail.com>", "Terry Sun <terrynsun@gmail.com>"]
 build = "build.rs"
 name = "jsrs-parser"
+license = "MIT"
 version = "0.1.0"
 
 [build-dependencies]
