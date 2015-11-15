@@ -27,37 +27,30 @@ BinExp<Op, NextLevel>: Exp = {
 pub Stmt: Stmt = {
     SingleStmt,
     <s1:SingleStmt> <s2:Stmt> => Stmt::Seq(Box::new(s1), Box::new(s2)),
+    If,
 };
 
 SingleStmt: Stmt = {
     <Var> "=" <Exp> ";" => Stmt::Assign(<>),
     "var" <Var> "=" <Exp> ";" => Stmt::Decl(<>),
-    <Exp> ";" => Stmt::BareExp(<>),
+    <BareExp> ";" => Stmt::BareExp(<>),
     "return" <Exp> ";" => Stmt::Ret(<>),
     "while" <Clause> <Block> => Stmt::While(<>),
-    "if" <c:Clause> <b:Block> <vec:ElseIfBlock*> <els:ElseBlock?> => {
-        let mut v = vec;
-
-        match v.pop() {
-            Some((e, s)) => {
-                let mut elsif = Box::new(Stmt::If(e, s, els));
-
-                for (e2, s2) in v.into_iter().rev() {
-                    elsif = Box::new(Stmt::If(e2, s2, Some(elsif)));
-                }
-
-                Stmt::If(c, b, Some(elsif))
-            }
-            None => Stmt::If(c, b, els)
-        }
-    },
-    Defun => Stmt::BareExp(<>),
+    NamedDefun => Stmt::BareExp(<>),
+    "if" <c:Clause> <b1:Block> "else" <b2:Block> => Stmt::If(c, b1, Some(b2)),
 };
 
-ElseIfBlock = "else" "if" <Clause> <Block>;
-ElseBlock = "else" <Block>;
+If: Stmt = {
+    "if" <c:Clause> <b:Block> => Stmt::If(c, b, None),
+    "if" <c:Clause> <b:Block> "else" <i:If> => Stmt::If(c, b, Some(Box::new(i))),
+};
 
-Block: Box<Stmt> = "{" <s:Stmt> "}" => Box::new(s);
+Block: Box<Stmt> = {
+    BracedBlock,
+    SingleStmt => Box::new(<>),
+};
+
+BracedBlock: Box<Stmt> = "{" <s:Stmt> "}" => Box::new(s);
 Clause = "(" <Exp> ")";
 
 // Expressions ------------------------------------------------------------------------------------
@@ -67,7 +60,18 @@ pub Exp = {
     Defun,
 };
 
-Defun: Exp = "function" <Var?> <Params> <Block> => Exp::Defun(<>);
+BareExp = {
+    NonDefun,
+    NamedDefun,
+};
+
+Defun = {
+    AnonDefun,
+    NamedDefun,
+};
+
+AnonDefun: Exp = "function" <p:Params> <b:BracedBlock> => Exp::Defun(None, p, b);
+NamedDefun: Exp = "function" <v:Var> <p:Params> <b:BracedBlock> => Exp::Defun(Some(v), p, b);
 Params = ParenList<Var>;
 
 NonDefun = OrExp;
