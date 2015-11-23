@@ -10,10 +10,8 @@ fn main() {
     let mut err = io::stderr();
     let mut rl = Editor::new();
 
-    if let Ok(_) = metadata(".history") {
-        if let Err(_) = rl.load_history(".history") {
-            writeln!(err, "Error: unable to load history on startup").unwrap();
-        }
+    if metadata(".history").is_ok() && rl.load_history(".history").is_err() {
+        writeln!(err, "Error: unable to load history on startup").unwrap();
     }
 
     loop {
