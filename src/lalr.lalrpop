@@ -127,6 +127,11 @@ SignedExp: Exp = {
 
 Call: Exp = {
     <c:Call> <a:Args> => Exp::Call(Box::new(c), a),
+    NewObj,
+};
+
+NewObj: Exp = {
+    "new" <t:Term> <a:Args> => Exp::NewObject(Box::new(t), a),
     Term,
 };
 
@@ -136,6 +141,25 @@ Term: Exp = {
     Var => Exp::Var(<>),
     "undefined" => Exp::Undefined,
     "(" <Exp> ")",
+    "{" <ps:(<Property> ",")*> <p:Property?> "}" => {
+        let v = match p {
+            Some(prop) => {
+                let mut ps = ps;
+                ps.push(prop);
+                ps
+            },
+            None => ps
+        };
+
+        Exp::Object(v)
+    }
+};
+
+Property = <Key> ":" <BoxExp>;
+Key = {
+    Var,
+    <s:r#""[A-Za-z_][0-9A-Za-z_]*""#> => String::from(&s[1..s.len() - 1]),
+    "'" <Var> "'",
 };
 
 Args = ParenList<BoxExp>;
