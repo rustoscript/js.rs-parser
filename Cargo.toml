@@ -6,10 +6,10 @@ name = "jsrs-parser"
 version = "0.1.0"
 
 [build-dependencies]
-lalrpop = "0.8.0"
+lalrpop = "0.9.0"
 
 [dependencies]
-lalrpop-util = "0.8.0"
+lalrpop-util = "0.9.0"
 rustyline = "0.1.0"
 
 [dependencies.jsrs-common]
