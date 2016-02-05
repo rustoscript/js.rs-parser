@@ -120,25 +120,32 @@ PostExp: Exp = {
 };
 
 SignedExp: Exp = {
-    "-" <Term> => Exp::Neg(Box::new(<>)),
-    "+" <Term> => Exp::Pos(Box::new(<>)),
+    "-" <SignedOperand> => Exp::Neg(Box::new(<>)),
+    "+" <SignedOperand> => Exp::Pos(Box::new(<>)),
+    Constructor,
     Call,
+};
+
+SignedOperand = {
+    Constructor,
+    Call,
+};
+
+Constructor: Exp = {
+    "new" <Constructor> => Exp::NewObject(Box::new(<>), Vec::new()),
+    Term,
 };
 
 Call: Exp = {
     <c:Call> <a:Args> => Exp::Call(Box::new(c), a),
-    NewObj,
-};
-
-NewObj: Exp = {
-    "new" <t:Term> <a:Args> => Exp::NewObject(Box::new(t), a),
-    Term,
+    <t:Term> <a:Args> => Exp::Call(Box::new(t), a),
 };
 
 Term: Exp = {
     Bool => Exp::Bool(<>),
     Float => Exp::Float(<>),
     Var => Exp::Var(<>),
+    "new" <t:Term> <a:Args> => Exp::NewObject(Box::new(t), a),
     "undefined" => Exp::Undefined,
     "(" <Exp> ")",
     "{" <ps:(<Property> ",")*> <p:Property?> "}" => {
