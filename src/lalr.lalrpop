@@ -122,8 +122,7 @@ PostExp: Exp = {
 SignedExp: Exp = {
     "-" <SignedOperand> => Exp::Neg(Box::new(<>)),
     "+" <SignedOperand> => Exp::Pos(Box::new(<>)),
-    Constructor,
-    Call,
+    SignedOperand,
 };
 
 SignedOperand = {
@@ -139,6 +138,7 @@ Constructor: Exp = {
 Call: Exp = {
     <c:Call> <a:Args> => Exp::Call(Box::new(c), a),
     <t:Term> <a:Args> => Exp::Call(Box::new(t), a),
+    <c:Call> "." <v:Var> => Exp::InstanceVar(Box::new(c), v),
 };
 
 Term: Exp = {
@@ -148,6 +148,7 @@ Term: Exp = {
     "new" <t:Term> <a:Args> => Exp::NewObject(Box::new(t), a),
     "undefined" => Exp::Undefined,
     "(" <Exp> ")",
+    <t:Term> "." <v:Var> => Exp::InstanceVar(Box::new(t), v),
     "{" <ps:(<Property> ",")*> <p:Property?> "}" => {
         let v = match p {
             Some(prop) => {
