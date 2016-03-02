@@ -37,6 +37,7 @@ SingleStmt: Stmt = {
     "return" <Exp> ";" => Stmt::Ret(<>),
     "while" <Clause> <Block> => Stmt::While(<>),
     NamedDefun => Stmt::BareExp(<>),
+    "throw" <Exp> ";" => Stmt::Throw(Box::new(<>)),
     "if" <c:Clause> <b1:Block> "else" <b2:Block> => Stmt::If(c, b1, Some(b2)),
 };
 
@@ -100,11 +101,16 @@ AddOp: BinOp = {
     "-" => BinOp::Minus,
 };
 
-MulExp = BinExp<MulOp, PreExp>;
+MulExp = BinExp<MulOp, TypeOf>;
 
 MulOp: BinOp = {
     "*" => BinOp::Star,
     "/" => BinOp::Slash,
+};
+
+TypeOf : Exp = {
+    "typeof" <PreExp> => Exp::TypeOf(Box::new(<>)),
+    PreExp,
 };
 
 PreExp: Exp = {
