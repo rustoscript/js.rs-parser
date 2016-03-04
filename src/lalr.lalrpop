@@ -148,13 +148,18 @@ Call: Exp = {
 };
 
 Term: Exp = {
-    Bool => Exp::Bool(<>),
-    Float => Exp::Float(<>),
+    Lit,
     Var => Exp::Var(<>),
     "new" <t:Term> <a:Args> => Exp::NewObject(Box::new(t), a),
     "undefined" => Exp::Undefined,
     "(" <Exp> ")",
     <t:Term> "." <v:Var> => Exp::InstanceVar(Box::new(t), v),
+};
+
+Lit: Exp = {
+    Bool => Exp::Bool(<>),
+    Float => Exp::Float(<>),
+    Str => Exp::Str(<>),
     "{" <ps:(<Property> ",")*> <p:Property?> "}" => {
         let v = match p {
             Some(prop) => {
@@ -169,11 +174,13 @@ Term: Exp = {
     }
 };
 
-Property = <Key> ":" <BoxExp>;
+Property = {
+    <Key> ":" <BoxExp>
+};
+
 Key = {
+    Str,
     Var,
-    <s:r#""[A-Za-z_][0-9A-Za-z_]*""#> => String::from(&s[1..s.len() - 1]),
-    "'" <Var> "'",
 };
 
 Args = ParenList<BoxExp>;
@@ -193,11 +200,17 @@ Float: f64 = {
     r"-?[0-9]+\.?" => f64::from_str(<>).unwrap(),
     // '.2' or '2.0'
     r"-?[0-9]*\.[0-9]+" => f64::from_str(<>).unwrap(),
-    "NaN" => NAN
+    "NaN" => NAN,
 };
 
-Str: bool = {
-    // r#""([^\\"]+|\\())*""# => true,
-    r#""([bfnrtv'"\\]|[0-3]?[0-7]{1,2}|x[0-9a-fA-F]{2}|u[0-9a-fA-F]{4})""# => true
-    // r#"'([^\\']+|\\([bfnrtv'"\\]|[0-3]?[0-7]{1,2}|x[0-9a-fA-F]{2}|u[0-9a-fA-F]{4}))*'"# => Exp::Str(String::from(<>)),
+// Strings ----------------------------------------------------------------------------------------
+Str = {
+    SingleStr,
+    DoubleStr,
 };
+
+SingleStr: String =
+    r#"'(\\[0-3]?[0-7]{1,2}|[^\\']|\\[bfnrtv'"\\]|\\x[0-9a-fA-F]{2}|\\u[0-9a-fA-F]{4})*'"# => String::from(&<>[1..<>.len()-1]);
+
+DoubleStr: String =
+    r#""(\\[0-3]?[0-7]{1,2}|[^\\"]|\\[bfnrtv'"\\]|\\x[0-9a-fA-F]{2}|\\u[0-9a-fA-F]{4})*""# => String::from(&<>[1..<>.len()-1]);
