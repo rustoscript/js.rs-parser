@@ -39,7 +39,13 @@ SingleStmt: Stmt = {
     NamedDefun => Stmt::BareExp(<>),
     "throw" <Exp> ";" => Stmt::Throw(Box::new(<>)),
     "if" <c:Clause> <b1:Block> "else" <b2:Block> => Stmt::If(c, b1, Some(b2)),
+    "try" <t:BracedBlock> <c:CatchBlock> => Stmt::Try(t, Some(c), None),
+    "try" <t:BracedBlock> <f:FinallyBlock> => Stmt::Try(t, None, Some(f)),
+    "try" <t:BracedBlock> <c:CatchBlock> <f:FinallyBlock> => Stmt::Try(t, Some(c), Some(f)),
 };
+
+CatchBlock: Box<Stmt> = "catch" <BracedBlock>;
+FinallyBlock: Box<Stmt> = "finally" <BracedBlock>;
 
 If: Stmt = {
     "if" <c:Clause> <b:Block> => Stmt::If(c, b, None),
