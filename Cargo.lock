@@ -2,7 +2,7 @@
 name = "jsrs-parser"
 version = "0.1.0"
 dependencies = [
- "jsrs-common 0.1.0 (git+https://github.com/rustoscript/js.rs-common?rev=80087e7)",
+ "jsrs-common 0.1.0 (git+https://github.com/rustoscript/js.rs-common?rev=8e17624)",
  "lalrpop 0.11.0 (registry+https://github.com/rust-lang/crates.io-index)",
  "lalrpop-util 0.11.0 (registry+https://github.com/rust-lang/crates.io-index)",
  "nalgebra 0.3.2 (registry+https://github.com/rust-lang/crates.io-index)",
@@ -78,7 +78,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 [[package]]
 name = "jsrs-common"
 version = "0.1.0"
-source = "git+https://github.com/rustoscript/js.rs-common?rev=80087e7#80087e72943ba8ee3ebdf45034ee5b2a68028c8e"
+source = "git+https://github.com/rustoscript/js.rs-common?rev=8e17624#8e17624ab318b78b3e3fd2051c628a930ee920cf"
 
 [[package]]
 name = "kernel32-sys"
