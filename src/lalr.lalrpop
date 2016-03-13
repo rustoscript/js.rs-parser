@@ -31,6 +31,7 @@ pub Stmt: Stmt = {
 };
 
 SingleStmt: Stmt = {
+    r#"/\*[a-z0-9 `~!@#$%^&*()_+-=\[\]\{\}:;'"<>,\.?/]*\*/"# => Stmt::Empty,
     <Var> "=" <Exp> ";" => Stmt::Assign(<>),
     "var" <Var> "=" <Exp> ";" => Stmt::Decl(<>),
     <BareExp> ";" => Stmt::BareExp(<>),
@@ -39,7 +40,13 @@ SingleStmt: Stmt = {
     NamedDefun => Stmt::BareExp(<>),
     "throw" <Exp> ";" => Stmt::Throw(Box::new(<>)),
     "if" <c:Clause> <b1:Block> "else" <b2:Block> => Stmt::If(c, b1, Some(b2)),
+    "try" <t:BracedBlock> <c:CatchBlock> => Stmt::Try(t, Some(c), None),
+    "try" <t:BracedBlock> <f:FinallyBlock> => Stmt::Try(t, None, Some(f)),
+    "try" <t:BracedBlock> <c:CatchBlock> <f:FinallyBlock> => Stmt::Try(t, Some(c), Some(f)),
 };
+
+CatchBlock: Box<Stmt> = "catch" <BracedBlock>;
+FinallyBlock: Box<Stmt> = "finally" <BracedBlock>;
 
 If: Stmt = {
     "if" <c:Clause> <b:Block> => Stmt::If(c, b, None),
@@ -148,13 +155,18 @@ Call: Exp = {
 };
 
 Term: Exp = {
-    Bool => Exp::Bool(<>),
-    Float => Exp::Float(<>),
+    Lit,
     Var => Exp::Var(<>),
     "new" <t:Term> <a:Args> => Exp::NewObject(Box::new(t), a),
     "undefined" => Exp::Undefined,
     "(" <Exp> ")",
     <t:Term> "." <v:Var> => Exp::InstanceVar(Box::new(t), v),
+};
+
+Lit: Exp = {
+    Bool => Exp::Bool(<>),
+    Float => Exp::Float(<>),
+    Str => Exp::Str(<>),
     "{" <ps:(<Property> ",")*> <p:Property?> "}" => {
         let v = match p {
             Some(prop) => {
@@ -169,11 +181,13 @@ Term: Exp = {
     }
 };
 
-Property = <Key> ":" <BoxExp>;
+Property = {
+    <Key> ":" <BoxExp>
+};
+
 Key = {
+    Str,
     Var,
-    <s:r#""[A-Za-z_][0-9A-Za-z_]*""#> => String::from(&s[1..s.len() - 1]),
-    "'" <Var> "'",
 };
 
 Args = ParenList<BoxExp>;
@@ -193,5 +207,17 @@ Float: f64 = {
     r"-?[0-9]+\.?" => f64::from_str(<>).unwrap(),
     // '.2' or '2.0'
     r"-?[0-9]*\.[0-9]+" => f64::from_str(<>).unwrap(),
-    "NaN" => NAN
+    "NaN" => NAN,
 };
+
+// Strings ----------------------------------------------------------------------------------------
+Str = {
+    SingleStr,
+    DoubleStr,
+};
+
+SingleStr: String =
+    r#"'(\\[0-3]?[0-7]{1,2}|[^\\']|\\[bfnrtv'"\\]|\\x[0-9a-fA-F]{2}|\\u[0-9a-fA-F]{4})*'"# => String::from(&<>[1..<>.len()-1]);
+
+DoubleStr: String =
+    r#""(\\[0-3]?[0-7]{1,2}|[^\\"]|\\[bfnrtv'"\\]|\\x[0-9a-fA-F]{2}|\\u[0-9a-fA-F]{4})*""# => String::from(&<>[1..<>.len()-1]);
