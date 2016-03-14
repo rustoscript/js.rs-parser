@@ -31,6 +31,7 @@ pub Stmt: Stmt = {
 };
 
 SingleStmt: Stmt = {
+    r#"/\*[a-z0-9 `~!@#$%^&*()_+-=\[\]\{\}:;'"<>,\.?/]*\*/"# => Stmt::Empty,
     <Var> "=" <Exp> ";" => Stmt::Assign(<>),
     "var" <Var> "=" <Exp> ";" => Stmt::Decl(<>),
     <BareExp> ";" => Stmt::BareExp(<>),
