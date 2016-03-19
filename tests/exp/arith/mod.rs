@@ -21,6 +21,19 @@ fn bare_float() {
     assert_mostly_eq!(Float(-2.0), &parse_exp!("-2.0"));
     assert_mostly_eq!(Float(-0.2), &parse_exp!("-0.2"));
     assert_mostly_eq!(Float(-0.2), &parse_exp!("-.2"));
+
+    assert_mostly_eq!(Float(20.0), &parse_exp!("2e1"));
+    assert_mostly_eq!(Float(20.0), &parse_exp!("2.e1"));
+    assert_mostly_eq!(Float(20.0), &parse_exp!("2.0e1"));
+    assert_mostly_eq!(Float(2.0), &parse_exp!("0.2e1"));
+    assert_mostly_eq!(Float(2.0), &parse_exp!(".2e1"));
+
+    assert_mostly_eq!(Float(20.0), &parse_exp!("2E1"));
+    assert_mostly_eq!(Float(20.0), &parse_exp!("2.E1"));
+    assert_mostly_eq!(Float(20.0), &parse_exp!("2.0E1"));
+    assert_mostly_eq!(Float(2.0), &parse_exp!("0.2E1"));
+    assert_mostly_eq!(Float(2.0), &parse_exp!(".2E1"));
+
     assert_mostly_eq!(Float(NAN), &parse_exp!("NaN"));
 }
 
