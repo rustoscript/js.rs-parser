@@ -94,7 +94,9 @@ EqExp = BinExp<EqOp, AddExp>;
 
 EqOp: BinOp = {
     "==" => BinOp::Eql,
+    "===" => BinOp::EqlStrict,
     "!=" => BinOp::Neq,
+    "!==" => BinOp::NeqStrict,
     ">" => BinOp::Gt,
     ">=" => BinOp::Ge,
     "<" => BinOp::Lt,
