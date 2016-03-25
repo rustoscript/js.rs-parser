@@ -195,7 +195,7 @@ Key = {
 Args = ParenList<BoxExp>;
 BoxExp: Box<Exp> = Exp => Box::new(<>);
 
-Var: String = r"[A-Za-z_][0-9A-Za-z_]*" => String::from(<>);
+Var: String = r"[$A-Za-z_][$0-9A-Za-z_]*" => String::from(<>);
 
 // Literals ---------------------------------------------------------------------------------------
 
