@@ -10,7 +10,7 @@ lalrpop = "0.11.0"
 
 [dependencies]
 lalrpop-util = "0.11.0"
-rustyline = "0.2.1"
+rustyline = "0.2.2"
 
 [dependencies.jsrs-common]
 git = "https://github.com/rustoscript/js.rs-common"
