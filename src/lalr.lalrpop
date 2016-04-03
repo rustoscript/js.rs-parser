@@ -26,7 +26,7 @@ BinExp<Op, NextLevel>: Exp = {
 
 pub Stmt: Stmt = {
     SingleStmt,
-    <s1:SingleStmt> <s2:Stmt> => Stmt::Seq(Box::new(s1), Box::new(s2)),
+    //<s1:SingleStmt> <s2:Stmt> => Stmt::Seq(Box::new(s1), Box::new(s2)),
     If,
 };
 
@@ -58,7 +58,8 @@ Block: Box<Stmt> = {
     SingleStmt => Box::new(<>),
 };
 
-BracedBlock: Box<Stmt> = "{" <s:Stmt> "}" => Box::new(s);
+//BracedBlock: Box<Stmt> = "{" <s:Stmt> "}" => Box::new(s);
+BracedBlock: Vec<Stmt> = "{" <(<Stmt>)*> "}" => vec![<>];
 Clause = "(" <Exp> ")";
 
 // Expressions ------------------------------------------------------------------------------------
