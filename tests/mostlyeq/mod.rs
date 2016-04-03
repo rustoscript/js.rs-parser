@@ -40,15 +40,22 @@ impl MostlyEq for Stmt {
             (&Decl(ref v1, ref e1), &Decl(ref v2, ref e2)) => v1 == v2 && e1.mostly_eq(e2),
             (&BareExp(ref e1), &BareExp(ref e2)) => e1.mostly_eq(e2),
             (&If(ref e1, ref s1, ref opt1), &If(ref e2, ref s2, ref opt2)) => {
-                if !e1.mostly_eq(e2) || !s1.mostly_eq(s2) {
+                if !e1.mostly_eq(e2) {
                     return false;
                 }
 
-                match (opt1, opt2) {
-                    (&Some(ref s1), &Some(ref s2)) => s1.mostly_eq(s2),
-                    (&None, &None) => true,
-                    _ => return false
+                for (st1, st2) in s1.iter().zip(s2) {
+                    if !st1.mostly_eq(st2) {
+                        return false;
+                    }
                 }
+
+                for (st1, st2) in opt1.iter().zip(opt2) {
+                    if !st1.mostly_eq(st2) {
+                        return false;
+                    }
+                }
+                true
             }
             _ => false
         }

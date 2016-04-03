@@ -26,7 +26,6 @@ BinExp<Op, NextLevel>: Exp = {
 
 pub Stmt: Stmt = {
     SingleStmt,
-    <s1:SingleStmt> <s2:Stmt> => Stmt::Seq(Box::new(s1), Box::new(s2)),
     If,
 };
 
@@ -39,26 +38,26 @@ SingleStmt: Stmt = {
     "while" <Clause> <Block> => Stmt::While(<>),
     NamedDefun => Stmt::BareExp(<>),
     "throw" <Exp> ";" => Stmt::Throw(Box::new(<>)),
-    "if" <c:Clause> <b1:Block> "else" <b2:Block> => Stmt::If(c, b1, Some(b2)),
-    "try" <t:BracedBlock> <c:CatchBlock> => Stmt::Try(t, Some(c), None),
-    "try" <t:BracedBlock> <f:FinallyBlock> => Stmt::Try(t, None, Some(f)),
-    "try" <t:BracedBlock> <c:CatchBlock> <f:FinallyBlock> => Stmt::Try(t, Some(c), Some(f)),
+    "if" <c:Clause> <b1:Block> "else" <b2:Block> => Stmt::If(c, b1, b2),
+    "try" <t:BracedBlock> <c:CatchBlock> => Stmt::Try(t, c, vec![]),
+    "try" <t:BracedBlock> <f:FinallyBlock> => Stmt::Try(t, vec![], f),
+    "try" <t:BracedBlock> <c:CatchBlock> <f:FinallyBlock> => Stmt::Try(t, c, f),
 };
 
-CatchBlock: Box<Stmt> = "catch" <BracedBlock>;
-FinallyBlock: Box<Stmt> = "finally" <BracedBlock>;
+CatchBlock: Vec<Stmt> = "catch" <BracedBlock>;
+FinallyBlock: Vec<Stmt> = "finally" <BracedBlock>;
 
 If: Stmt = {
-    "if" <c:Clause> <b:Block> => Stmt::If(c, b, None),
-    "if" <c:Clause> <b:Block> "else" <i:If> => Stmt::If(c, b, Some(Box::new(i))),
+    "if" <c:Clause> <b:Block> => Stmt::If(c, b, vec![]),
+    "if" <c:Clause> <b:Block> "else" <i:If> => Stmt::If(c, b, vec![i]),
 };
 
-Block: Box<Stmt> = {
+Block: Vec<Stmt> = {
     BracedBlock,
-    SingleStmt => Box::new(<>),
+    SingleStmt => vec![<>],
 };
 
-BracedBlock: Box<Stmt> = "{" <s:Stmt> "}" => Box::new(s);
+BracedBlock: Vec<Stmt> = "{" <Stmt+> "}";
 Clause = "(" <Exp> ")";
 
 // Expressions ------------------------------------------------------------------------------------
