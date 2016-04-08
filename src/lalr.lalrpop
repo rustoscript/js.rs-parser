@@ -160,6 +160,7 @@ Term: Exp = {
     Var => Exp::Var(<>),
     "new" <t:Term> <a:Args> => Exp::NewObject(Box::new(t), a),
     "undefined" => Exp::Undefined,
+    "null" => Exp::Null,
     "(" <Exp> ")",
     <t:Term> "." <v:Var> => Exp::InstanceVar(Box::new(t), v),
 };
