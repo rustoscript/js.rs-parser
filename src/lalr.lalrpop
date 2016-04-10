@@ -39,12 +39,12 @@ SingleStmt: Stmt = {
     NamedDefun => Stmt::BareExp(<>),
     "throw" <Exp> ";" => Stmt::Throw(Box::new(<>)),
     "if" <c:Clause> <b1:Block> "else" <b2:Block> => Stmt::If(c, b1, b2),
-    "try" <t:BracedBlock> <c:CatchBlock> => Stmt::Try(t, c, vec![]),
-    "try" <t:BracedBlock> <f:FinallyBlock> => Stmt::Try(t, vec![], f),
-    "try" <t:BracedBlock> <c:CatchBlock> <f:FinallyBlock> => Stmt::Try(t, c, f),
+    "try" <t:BracedBlock> <c:CatchBlock> => Stmt::Try(t, c.0, c.1, vec![]),
+    "try" <t:BracedBlock> <f:FinallyBlock> => Stmt::Try(t, String::from(""), vec![], f),
+    "try" <t:BracedBlock> <c:CatchBlock> <f:FinallyBlock> => Stmt::Try(t, c.0, c.1, f),
 };
 
-CatchBlock: Vec<Stmt> = "catch" <BracedBlock>;
+CatchBlock: (String, Vec<Stmt>) = "catch" "(" <Var> ")" <BracedBlock>;
 FinallyBlock: Vec<Stmt> = "finally" <BracedBlock>;
 
 If: Stmt = {
