@@ -3,6 +3,7 @@ extern crate rustyline;
 
 use jsrs_parser::lalr::parse_Stmt;
 use rustyline::Editor;
+use rustyline::error::ReadlineError::Eof;
 use std::fs::metadata;
 use std::io::{self, Write};
 
@@ -15,7 +16,13 @@ fn main() {
     }
 
     loop {
-        let input = rl.readline(">> ").unwrap();
+        let input_result = rl.readline(">> ");
+
+        let input = match input_result {
+            Ok(t) => t,
+            Err(Eof) => String::from(".exit"),
+            Err(e) => panic!("Error: {:?}", e),
+        };
 
         if input.eq(".exit") {
             if let Err(_) = rl.save_history(".history") {
