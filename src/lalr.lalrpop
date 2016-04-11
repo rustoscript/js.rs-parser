@@ -31,7 +31,7 @@ pub Stmt: Stmt = {
 
 SingleStmt: Stmt = {
     r#"/\*[A-Za-z0-9 `~!@#$%^&*()_+-=\[\]\{\}:;'"<>,\.?/]*\*/"# => Stmt::Empty,
-    <Var> "=" <Exp> ";" => Stmt::Assign(<>),
+    <OrExp> "=" <Exp> ";" => Stmt::Assign(<>),
     "var" <Var> "=" <Exp> ";" => Stmt::Decl(<>),
     <BareExp> ";" => Stmt::BareExp(<>),
     "return" <Exp> ";" => Stmt::Ret(<>),
@@ -81,7 +81,10 @@ AnonDefun: Exp = "function" <p:Params> <b:BracedBlock> => Exp::Defun(None, p, b)
 NamedDefun: Exp = "function" <v:Var> <p:Params> <b:BracedBlock> => Exp::Defun(Some(v), p, b);
 Params = ParenList<Var>;
 
-NonDefun = OrExp;
+NonDefun = {
+    OrExp,
+    ObjLit,
+};
 
 OrExp = BinExp<OrOp, AndExp>;
 OrOp: BinOp = "||" => BinOp::Or;
@@ -146,16 +149,35 @@ SignedOperand = {
 
 Constructor: Exp = {
     "new" <Constructor> => Exp::NewObject(Box::new(<>), Vec::new()),
-    Term,
+    "new" <ObjLit> => Exp::NewObject(Box::new(<>), Vec::new()),
+    LHSTerm,
 };
 
 Call: Exp = {
     <c:Call> <a:Args> => Exp::Call(Box::new(c), a),
-    <t:Term> <a:Args> => Exp::Call(Box::new(t), a),
+    <t:LHSTerm> <a:Args> => Exp::Call(Box::new(t), a),
     <c:Call> "." <v:Var> => Exp::InstanceVar(Box::new(c), v),
 };
 
+ObjLit: Exp = "{" <ps:(<Property> ",")*> <p:Property?> "}" => {
+    let v = match p {
+        Some(prop) => {
+            let mut ps = ps;
+            ps.push(prop);
+            ps
+        },
+        None => ps
+    };
+
+    Exp::Object(v)
+};
+
 Term: Exp = {
+    LHSTerm,
+    ObjLit,
+};
+
+LHSTerm: Exp = {
     Lit,
     Var => Exp::Var(<>),
     "new" <t:Term> <a:Args> => Exp::NewObject(Box::new(t), a),
@@ -169,18 +191,6 @@ Lit: Exp = {
     Bool => Exp::Bool(<>),
     Float => Exp::Float(<>),
     Str => Exp::Str(<>),
-    "{" <ps:(<Property> ",")*> <p:Property?> "}" => {
-        let v = match p {
-            Some(prop) => {
-                let mut ps = ps;
-                ps.push(prop);
-                ps
-            },
-            None => ps
-        };
-
-        Exp::Object(v)
-    }
 };
 
 Property = {
