@@ -160,6 +160,7 @@ PostExp: Exp = {
 SignedExp: Exp = {
     "-" <SignedOperand> => Exp::Neg(Box::new(<>)),
     "+" <SignedOperand> => Exp::Pos(Box::new(<>)),
+    "!" <SignedOperand> => Exp::LogNot(Box::new(<>)),
     SignedOperand,
 };
 
