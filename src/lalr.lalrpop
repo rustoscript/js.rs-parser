@@ -89,20 +89,39 @@ NonDefun = {
 OrExp = BinExp<OrOp, AndExp>;
 OrOp: BinOp = "||" => BinOp::Or;
 
-AndExp = BinExp<AndOp, EqExp>;
+AndExp = BinExp<AndOp, BitOrExp>;
 AndOp: BinOp = "&&" => BinOp::And;
 
-EqExp = BinExp<EqOp, AddExp>;
+BitOrExp = BinExp<BitOrOp, BitXorExp>;
+BitOrOp: BinOp = "|" => BinOp::BitOr;
 
+BitXorExp = BinExp<BitXorOp, BitAndExp>;
+BitXorOp: BinOp = "^" => BinOp::BitXor;
+
+BitAndExp = BinExp<BitAndOp, EqExp>;
+BitAndOp: BinOp = "&" => BinOp::BitAnd;
+
+EqExp = BinExp<EqOp, CmpExp>;
 EqOp: BinOp = {
     "==" => BinOp::Eql,
     "===" => BinOp::EqlStrict,
     "!=" => BinOp::Neq,
     "!==" => BinOp::NeqStrict,
+};
+
+CmpExp = BinExp<CmpOp, ShiftExp>;
+CmpOp: BinOp = {
     ">" => BinOp::Gt,
     ">=" => BinOp::Ge,
     "<" => BinOp::Lt,
     "<=" => BinOp::Le,
+};
+
+ShiftExp = BinExp<ShiftOp, AddExp>;
+ShiftOp: BinOp = {
+    "<<" => BinOp::ShiftLeft,
+    ">>" => BinOp::ShiftRight,
+    ">>>" => BinOp::ShiftRightUnsigned,
 };
 
 AddExp = BinExp<AddOp, MulExp>;
@@ -117,6 +136,8 @@ MulExp = BinExp<MulOp, TypeOf>;
 MulOp: BinOp = {
     "*" => BinOp::Star,
     "/" => BinOp::Slash,
+    "**" => BinOp::Exponent,
+    "%" => BinOp::Mod,
 };
 
 TypeOf : Exp = {
