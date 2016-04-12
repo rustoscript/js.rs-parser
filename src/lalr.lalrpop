@@ -191,6 +191,15 @@ Lit: Exp = {
     Bool => Exp::Bool(<>),
     Float => Exp::Float(<>),
     Str => Exp::Str(<>),
+    "[" <es:ParenVal<Exp>*> <e:Exp?> "]" => {
+        let mut vec = es;
+
+        if let Some(exp) = e {
+            vec.push(exp);
+        }
+
+        Exp::Array(vec.into_iter().map(Box::new).collect())
+    }
 };
 
 Property = {
