@@ -180,6 +180,7 @@ Term: Exp = {
 LHSTerm: Exp = {
     Lit,
     Var => Exp::Var(<>),
+    <t:Term> "[" <k:BoxExp> "]" => Exp::KeyAccessor(Box::new(t), k),
     "new" <t:Term> <a:Args> => Exp::NewObject(Box::new(t), a),
     "undefined" => Exp::Undefined,
     "null" => Exp::Null,
