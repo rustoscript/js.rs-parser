@@ -1,5 +1,5 @@
 use std::str::FromStr;
-use std::f64::NAN;
+use std::f64::{NAN, INFINITY};
 use jsrs_common::ast::{BinOp, Exp, Stmt};
 
 grammar;
@@ -257,6 +257,7 @@ Float: f64 = {
     // '.2' or '2.0'
     r"-?[0-9]*\.[0-9]+[eE][-+]?[0-9]+" => f64::from_str(<>).unwrap(),
     "NaN" => NAN,
+    "Infinity" => INFINITY,
 };
 
 // Strings ----------------------------------------------------------------------------------------
