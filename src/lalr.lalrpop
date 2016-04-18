@@ -104,10 +104,7 @@ AnonDefun: Exp = "function" <p:Params> <b:BracedBlock> => Exp::Defun(None, p, b)
 NamedDefun: Exp = "function" <v:Var> <p:Params> <b:BracedBlock> => Exp::Defun(Some(v), p, b);
 Params = ParenList<Var>;
 
-NonDefun = {
-    OrExp,
-    ObjLit,
-};
+NonDefun = OrExp;
 
 OrExp = BinExp<OrOp, AndExp>;
 OrOp: BinOp = "||" => BinOp::Or;
@@ -138,6 +135,7 @@ CmpOp: BinOp = {
     ">=" => BinOp::Ge,
     "<" => BinOp::Lt,
     "<=" => BinOp::Le,
+    "instanceof" => BinOp::InstanceOf,
 };
 
 ShiftExp = BinExp<ShiftOp, AddExp>;
@@ -191,6 +189,7 @@ SignedExp: Exp = {
 SignedOperand = {
     Constructor,
     Call,
+    ObjLit,
 };
 
 Constructor: Exp = {
