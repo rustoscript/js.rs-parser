@@ -32,6 +32,10 @@ pub Stmt: Stmt = {
 SingleStmt: Stmt = {
     r#"/\*[A-Za-z0-9 `~!@#$%^&*()_+-=\[\]\{\}:;'"<>,\.?/]*\*/"# => Stmt::Empty,
     <OrExp> "=" <Exp> ";" => Stmt::Assign(<>),
+    <v:Var> <o:AssignOp> <e:Exp> ";" => {
+        let var = Exp::Var(v);
+        Stmt::Assign(var.clone(), Exp::BinExp(Box::new(var.clone()), o, Box::new(e)))
+    },
     "var" <Var> "=" <Exp> ";" => Stmt::Decl(<>),
     <BareExp> ";" => Stmt::BareExp(<>),
     "return" <Exp> ";" => Stmt::Ret(<>),
@@ -42,6 +46,22 @@ SingleStmt: Stmt = {
     "try" <t:BracedBlock> <c:CatchBlock> => Stmt::Try(t, c.0, c.1, vec![]),
     "try" <t:BracedBlock> <f:FinallyBlock> => Stmt::Try(t, String::from(""), vec![], f),
     "try" <t:BracedBlock> <c:CatchBlock> <f:FinallyBlock> => Stmt::Try(t, c.0, c.1, f),
+};
+
+AssignOp: BinOp = {
+    "&&=" => BinOp::And,
+    "||=" => BinOp::Or,
+    "|=" => BinOp::BitAnd,
+    "&=" => BinOp::BitOr,
+    "^=" => BinOp::BitXor,
+    "<<=" => BinOp::ShiftLeft,
+    ">>=" => BinOp::ShiftRight,
+    ">>>=" => BinOp::ShiftRightUnsigned,
+    "-=" => BinOp::Minus,
+    "+=" => BinOp::Plus,
+    "/=" => BinOp::Slash,
+    "*=" => BinOp::Star,
+    "%=" => BinOp::Mod,
 };
 
 CatchBlock: (String, Vec<Stmt>) = "catch" "(" <Var> ")" <BracedBlock>;
