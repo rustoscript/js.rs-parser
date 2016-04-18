@@ -30,11 +30,14 @@ pub Stmt: Stmt = {
 };
 
 SingleStmt: Stmt = {
-    r#"/\*[A-Za-z0-9 `~!@#$%^&*()_+-=\[\]\{\}:;'"<>,\.?/]*\*/"# => Stmt::Empty,
+    r#"/\*[A-Za-z0-9 `~!@#$%^&*()_+-=|\[\]\{\}:;'"<>,\.?/]*\*/"# => Stmt::Empty,
     <OrExp> "=" <Exp> ";" => Stmt::Assign(<>),
     "var" <Var> "=" <Exp> ";" => Stmt::Decl(<>),
+    "var" <Var> ";" => Stmt::VarDecl(<>),
     <BareExp> ";" => Stmt::BareExp(<>),
     "return" <Exp> ";" => Stmt::Ret(<>),
+    "continue" ";" => Stmt::Continue,
+    "break" ";" => Stmt::Break,
     "while" <Clause> <Block> => Stmt::While(<>),
     NamedDefun => Stmt::BareExp(<>),
     "throw" <Exp> ";" => Stmt::Throw(Box::new(<>)),
