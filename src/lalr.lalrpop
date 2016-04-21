@@ -43,6 +43,8 @@ SingleStmt: Stmt = {
     "continue" ";" => Stmt::Continue,
     "break" ";" => Stmt::Break,
     "while" <Clause> <Block> => Stmt::While(<>),
+    "for" "(" <i: SingleStmt> <c: Exp> ";" <s: Exp> ")" <b: Block> =>
+        Stmt::For(Box::new(i), c, s, b),
     NamedDefun => Stmt::BareExp(<>),
     "throw" <Exp> ";" => Stmt::Throw(Box::new(<>)),
     "if" <c:Clause> <b1:Block> "else" <b2:Block> => Stmt::If(c, b1, b2),
